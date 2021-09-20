@@ -2,6 +2,10 @@
   "swagger": "2.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "API for room finder application"
+    "title": "Room Finder API",
+    "description": "This is the API for a room finder application",
+    "contact": {
+      "email": "pappiah00@gmail.com"
+    }
   }
 }
