@@ -11,7 +11,7 @@
   "host": "room-finder-api.herokuapp.com",
   "basePath": "/api",
   "tags": [],
-  "schemes": ["http"],
+  "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "paths": {},
