@@ -14,8 +14,10 @@ import swaggerDoc from "./src/swagger.json";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
+const HOST = process.env.HOST || "localhost";
 
 app.set("port", PORT);
+app.set("host", HOST);
 
 // Middlewares
 app.use(compression());
@@ -56,11 +58,9 @@ app.use(
   })
 );
 
-const HOSTNAME = "localhost";
-
-app.listen(PORT, HOSTNAME, async () => {
+app.listen(PORT, HOST, async () => {
   try {
-    console.log(`Server running at http://${HOSTNAME}:${PORT}`.green.inverse);
+    console.log(`Server running at ${HOST}:${PORT}`.green.inverse);
 
     const db = await initializeDB();
     try {
