@@ -7,5 +7,13 @@
     "contact": {
       "email": "pappiah00@gmail.com"
     }
-  }
+  },
+  "host": "room-finder-api.herokuapp.com",
+  "basePath": "/api",
+  "tags": [],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {},
+  "definitions": {}
 }
