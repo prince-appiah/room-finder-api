@@ -6,6 +6,7 @@ import express from "express";
 import helmet from "helmet";
 import compression from "compression";
 import cors from "cors";
+import path, { dirname } from "path";
 import colors from "colors";
 
 import { initializeDB } from "./db.js";
@@ -66,6 +67,8 @@ app.listen(PORT, HOST, async () => {
     try {
       if (db) {
         console.log("Database connected...".cyan.inverse);
+      } else {
+        console.log("Could not connect to database...".red.inverse);
       }
     } catch (error) {
       Sentry.captureException(error);
@@ -76,5 +79,3 @@ app.listen(PORT, HOST, async () => {
     console.log("error connecting to server", error);
   }
 });
-
-// export default app;
