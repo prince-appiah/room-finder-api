@@ -23,7 +23,11 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDoc, { customSiteTitle: "Room Finder API" })
+);
 
 Sentry.init({
   dsn: process.env.DSN,
