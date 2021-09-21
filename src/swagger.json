@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0.0",
+  "swagger": "2.0",
   "info": {
     "version": "1.0.0",
     "title": "Room Finder API",
@@ -9,8 +9,12 @@
     }
   },
   "host": "room-finder-api.herokuapp.com",
-  "basePath": "/api",
-  "tags": [],
+  "basePath": "/api/v1",
+  "tags": [
+    { "name": "Users", "description": "Endpoints for users" },
+    { "name": "Rooms", "description": "Endpoints for rooms" },
+    { "name": "Bookings", "description": "Endpoints for bookings" }
+  ],
   "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
