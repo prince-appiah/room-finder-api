@@ -15,10 +15,8 @@ import swaggerDoc from "./src/swagger.json";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || "localhost";
 
 app.set("port", PORT);
-app.set("host", HOST);
 
 // Middlewares
 app.use(compression());
@@ -58,6 +56,8 @@ app.use(
     },
   })
 );
+
+const HOST = process.env.HOST || "localhost";
 
 app.listen(PORT, HOST, async () => {
   try {
