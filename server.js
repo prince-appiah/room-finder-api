@@ -1,6 +1,5 @@
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
-const dotenv = require("dotenv");
 const swaggerUi = require("swagger-ui-express");
 const express = require("express");
 const helmet = require("helmet");
@@ -11,7 +10,7 @@ const colors = require("colors");
 const { initializeDB } = require("./db");
 const swaggerDoc = require("./src/swagger.json");
 
-dotenv.config();
+require("dotenv").config();
 const app = express();
 
 // app.set("port", PORT);
