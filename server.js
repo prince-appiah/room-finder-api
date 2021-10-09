@@ -10,7 +10,6 @@ const colors = require("colors");
 
 const { initializeDB } = require("./db");
 const swaggerDoc = require("./src/swagger.json");
-const routes = require("./src/routes/index");
 
 dotenv.config();
 const app = express();
@@ -47,7 +46,8 @@ app.get("/", function rootHandler(req, res, next) {
 });
 
 // Load all routes
-app.use("/api/v1", routes(app));
+const routes = require("./src/routes/index")(app);
+app.use("/api/v1", routes);
 
 // The error handler must be before any other error middleware and after all controllers
 // app.use(Sentry.Handlers.errorHandler());
