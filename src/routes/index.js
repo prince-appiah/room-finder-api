@@ -1,11 +1,10 @@
 const express = require("express");
 
-const roomRoutes = require("./rooms.routes");
-
 module.exports = (app) => {
   let router = express.Router();
 
-  router.use(roomRoutes(app));
+  let roomRoutes = require("./rooms.routes")(app);
+  router.use(roomRoutes);
 
   return router;
 };
