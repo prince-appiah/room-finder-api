@@ -2,7 +2,7 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class Room extends Model {
+  class Otp extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,35 +12,39 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Room.init(
+  Otp.init(
     {
-      name: {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
+      email: {
         type: DataTypes.STRING,
+        //   unique:true,
         allowNull: false,
       },
-      price: {
-        type: DataTypes.INTEGER,
+      otp: {
+        type: DataTypes.STRING(6),
         allowNull: false,
       },
-      description: {
-        type: DataTypes.STRING,
-        unique: true,
+      expiry_date: {
+        type: DataTypes.DATE,
         allowNull: false,
-      },
-      address: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        get: function () {
+          this.getDataValue("expiry_date");
+        },
       },
     },
     {
       sequelize,
-      modelName: "Room",
-      tableName: "Rooms",
+      modelName: "Otp",
+      tableName: "UserOtps",
       timestamps: true,
       createdAt: "created_on",
       updatedAt: "updated_at",
     }
   ).sync();
 
-  return Room;
+  return Otp;
 };

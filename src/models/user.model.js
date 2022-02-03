@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: "created_on",
       updatedAt: "updated_at",
     }
-  );
+  ).sync();
 
   return User;
 };
