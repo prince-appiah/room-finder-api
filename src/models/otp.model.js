@@ -24,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         //   unique:true,
         allowNull: false,
       },
-
       otp: {
         type: DataTypes.STRING(6),
         allowNull: false,
@@ -35,11 +34,6 @@ module.exports = (sequelize, DataTypes) => {
         get: function () {
           this.getDataValue("expiry_date");
         },
-        //   isVerified: {
-        //     type: DataTypes.BOOLEAN,
-        //     defaultValue:false,
-        //     allowNull: true,
-        //   },
       },
     },
     {

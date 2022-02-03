@@ -1332,6 +1332,11 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
+otp-generator@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/otp-generator/-/otp-generator-2.0.1.tgz#c7bb1e2fd5e030dc18fb84c1076c89efb83376cf"
+  integrity sha512-NqeZDT3DW1ajeS6I0qRJcjvrvTHMkS/bAbmS1KoeWx0t8exuZEva01cRAOheolNZa7IUV86Wl/0msB07eq5Spg==
+
 p-cancelable@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/p-cancelable/-/p-cancelable-1.1.0.tgz#d078d15a3af409220c886f1d9a0ca2e441ab26cc"

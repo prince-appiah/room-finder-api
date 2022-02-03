@@ -23,6 +23,7 @@
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "mysql2": "^2.3.0",
+    "otp-generator": "^2.0.1",
     "sequelize": "^6.6.5",
     "swagger-ui-express": "^4.1.6"
   },
