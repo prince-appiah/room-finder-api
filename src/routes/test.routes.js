@@ -1,5 +1,9 @@
-import express from "express";
+const express = require("express");
 
-const router = express.Router();
+module.exports = (app) => {
+  const router = express.Router();
 
-router.get("/test");
+  router.get("/test");
+
+  return router;
+};

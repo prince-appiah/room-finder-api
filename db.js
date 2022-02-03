@@ -1,8 +1,8 @@
-import mysql2 from "mysql2/promise";
-import { Sequelize } from "sequelize";
-import * as dbConfig from "./src/config/db.config.js";
+const mysql2 = require("mysql2/promise");
+const { Sequelize } = require("sequelize");
+const dbConfig = require("./src/config/db.config");
 
-export const initializeDB = async () => {
+initializeDB = async () => {
   try {
     let connection = await mysql2.createPool({
       host: dbConfig.host,
@@ -26,3 +26,4 @@ export const initializeDB = async () => {
     console.log("error from initializeDB:>> ", error);
   }
 };
+module.exports = { initializeDB };

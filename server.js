@@ -1,18 +1,16 @@
-import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
-import dotenv from "dotenv";
-import swaggerUi from "swagger-ui-express";
-import express from "express";
-import helmet from "helmet";
-import compression from "compression";
-import cors from "cors";
-import path, { dirname } from "path";
-import colors from "colors";
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
+const swaggerUi = require("swagger-ui-express");
+const express = require("express");
+const helmet = require("helmet");
+const compression = require("compression");
+const cors = require("cors");
+const colors = require("colors");
 
-import { initializeDB } from "./db.js";
-import swaggerDoc from "./src/swagger.json";
+const { initializeDB } = require("./db");
+const swaggerDoc = require("./src/swagger.json");
 
-dotenv.config();
+require("dotenv").config();
 const app = express();
 
 // app.set("port", PORT);
@@ -42,9 +40,13 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
 // All controllers should live here
-app.get("/", function rootHandler(req, res) {
+app.get("/", function rootHandler(req, res, next) {
   res.redirect("/docs");
 });
+
+// Load all routes
+const routes = require("./src/routes/index")(app);
+app.use("/api/v1", routes);
 
 // The error handler must be before any other error middleware and after all controllers
 // app.use(Sentry.Handlers.errorHandler());
