@@ -1,6 +1,5 @@
 const Sentry = require("@sentry/node");
 
-const { User } = require("../models");
 const OtpRepo = require("./otp.repo");
 const UserRepo = require("./user.repo");
 
