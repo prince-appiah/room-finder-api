@@ -7,8 +7,7 @@ const compression = require("compression");
 const cors = require("cors");
 const colors = require("colors");
 
-const { initializeDB } = require("./db");
-const swaggerDoc = require("./src/swagger.json");
+const swaggerDoc = require("./swagger.json");
 
 require("dotenv").config();
 const app = express();
@@ -45,7 +44,7 @@ app.get("/", function rootHandler(req, res, next) {
 });
 
 // Load all routes
-const routes = require("./src/routes/index")(app);
+const routes = require("./routes/index")(app);
 app.use("/api/v1", routes);
 
 // The error handler must be before any other error middleware and after all controllers
@@ -62,26 +61,4 @@ app.use(
   })
 );
 
-const HOST = process.env.HOST || "0.0.0.0";
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, HOST, async () => {
-  try {
-    console.log(`Server running at ${HOST}:${PORT}`.green.inverse);
-
-    const db = await initializeDB();
-    try {
-      if (db) {
-        console.log("Database connected...".cyan.inverse);
-      } else {
-        console.log("Could not connect to database...".red.inverse);
-      }
-    } catch (error) {
-      Sentry.captureException(error);
-      console.log("error connecting to database...", error);
-    }
-  } catch (error) {
-    Sentry.captureException(error);
-    console.log("error connecting to server", error);
-  }
-});
+module.exports = app;

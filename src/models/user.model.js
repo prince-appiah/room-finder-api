@@ -1,50 +1,39 @@
-"use strict";
-const { Model } = require("sequelize");
+const { Mongoose, Schema, model } = require("mongoose");
 
-module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  User.init(
-    {
-      first_name: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      last_name: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      email: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-      },
-      phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      profileAvatar: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
+const userSchema = new Schema(
+  {
+    firstname: {
+      type: String,
+      required: true,
+      maxlength: 50,
     },
-    {
-      sequelize,
-      modelName: "User",
-      tableName: "Users",
-      timestamps: true,
-      createdAt: "created_on",
-      updatedAt: "updated_at",
-    }
-  ).sync();
+    lastname: {
+      type: String,
+      required: true,
+      maxlength: 50,
+    },
 
-  return User;
-};
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user", "host"],
+      default: "user",
+    },
+    profilePicture: {
+      type: String,
+      trim: true,
+      default:
+        "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
+    },
+  },
+  { timestamps: true }
+);
+
+// Mongoose hooks here - if any
+
+module.exports = model("User", userSchema);
