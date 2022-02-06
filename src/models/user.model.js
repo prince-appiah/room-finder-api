@@ -1,4 +1,4 @@
-const { Mongoose, Schema, model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
   {
@@ -12,7 +12,6 @@ const userSchema = new Schema(
       required: true,
       maxlength: 50,
     },
-
     email: {
       type: String,
       required: true,
@@ -22,6 +21,7 @@ const userSchema = new Schema(
     role: {
       type: String,
       enum: ["admin", "user", "host"],
+      required: true,
       default: "user",
     },
     profilePicture: {
@@ -29,6 +29,14 @@ const userSchema = new Schema(
       trim: true,
       default:
         "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
+    },
+    otp: {
+      code: {
+        type: String,
+      },
+      expiresAt: {
+        type: Date,
+      },
     },
   },
   { timestamps: true }

@@ -10,15 +10,8 @@ app.listen(PORT, HOST, async () => {
 
     const db = await connectDatabase();
 
-    try {
-      if (db) {
-        console.log("Database connected...".cyan.inverse);
-      } else {
-        console.log("Could not connect to database...".red.inverse);
-      }
-    } catch (error) {
-      Sentry.captureException(error);
-      console.log("error connecting to database...", error);
+    if (db) {
+      console.log("Database connected...".cyan.inverse);
     }
   } catch (error) {
     Sentry.captureException(error);
