@@ -9,5 +9,11 @@ module.exports = (app) => {
   let roomRoutes = require("./rooms.routes")(app);
   router.use(roomRoutes);
 
+  let roomTypeRoutes = require("./room-type.routes")(app);
+  router.use(roomTypeRoutes);
+
+  let amenityRoutes = require("./amenity.routes")(app);
+  router.use(amenityRoutes);
+
   return router;
 };
