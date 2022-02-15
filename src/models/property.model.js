@@ -5,9 +5,15 @@ const propertySchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     name: {
       type: String,
+      required: true,
+    },
+    roomType: {
+      type: Schema.Types.ObjectId,
+      ref: "RoomType",
       required: true,
     },
     price: {
@@ -27,7 +33,12 @@ const propertySchema = new Schema(
     },
     images: {
       type: [String],
+      required: false,
+    },
+    isApproved: {
+      type: Boolean,
       required: true,
+      default: false,
     },
   },
   { timestamps: true }
