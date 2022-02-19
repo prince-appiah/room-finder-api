@@ -18,6 +18,19 @@
   "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "paths": {},
+  "paths": {
+    "/room-types": {
+      "get": {
+        "description": "Returns a list of all room types",
+        "tags": ["Rooms", "Users"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": "application/json"
+          }
+        }
+      }
+    }
+  },
   "definitions": {}
 }
