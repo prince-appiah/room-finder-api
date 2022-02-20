@@ -12,25 +12,146 @@
   "basePath": "/api/v1",
   "tags": [
     { "name": "Users", "description": "Endpoints for users" },
-    { "name": "Rooms", "description": "Endpoints for rooms" },
+    { "name": "Property", "description": "Endpoints for properties" },
     { "name": "Bookings", "description": "Endpoints for bookings" }
   ],
   "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "paths": {
-    "/room-types": {
-      "get": {
-        "description": "Returns a list of all room types",
-        "tags": ["Rooms", "Users"],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": "application/json"
+  "definitions": {
+    "RoomType": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        }
+      }
+    },
+    "Amenity": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        }
+      }
+    },
+    "Property": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "roomType": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "price": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "description": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "stayPeriod": {
+          "type": "string",
+          "enum": ["day", "week", "month", "year"]
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
+        },
+        "isApproved": {
+          "type": "boolean",
+          "default": false
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     }
   },
-  "definitions": {}
+  "paths": {
+    "/room-types": {
+      "get": {
+        "description": "Returns a list of all room types",
+        "tags": ["Property", "Users"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RoomType"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new room type",
+        "tags": ["Rooms", "Users"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Room type object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RoomType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RoomType"
+            }
+          }
+        }
+      }
+    },
+
+    "/amenities": {
+      "get": {
+        "description": "Returns a list of all amenities",
+        "tags": ["Property", "Users"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Amenity"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

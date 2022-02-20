@@ -21,6 +21,10 @@ const propertySchema = new Schema(
       required: true,
       maxlength: 50,
     },
+    description: {
+      type: String,
+      required: true,
+    },
     location: {
       type: String,
       required: true,
