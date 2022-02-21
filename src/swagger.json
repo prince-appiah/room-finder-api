@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "Room Finder API",
+    "title": "Shelter API",
     "description": "This is the API for a room finder application",
     "contact": {
       "email": "pappiah00@gmail.com"
