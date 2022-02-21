@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   "/docs",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerDoc, { customSiteTitle: "Room Finder API" })
+  swaggerUi.setup(swaggerDoc, { customSiteTitle: "Shelter API" })
 );
 
 Sentry.init({
