@@ -11,14 +11,10 @@ class AuthRepo {
    * @param {string} email
    */
   static async signup({ email, userType, firstname, lastname }) {
-    // 2. Since email is unique, use that to create new otp
-    // 3. Upon successful registration, send the created otp to the user using mail service
     try {
-      const response = { msg: "", status: null, user: null };
+      const response = { msg: "", status: null };
 
-      // 1. User provides dtails for signup - check if exists before moving to the next function
       const existingUser = await UserRepo.findUser(email);
-      console.log("🚀 ~ existingUser", existingUser);
 
       if (!existingUser) {
         // go ahead and create new one
@@ -29,12 +25,19 @@ class AuthRepo {
           userType,
         });
 
-        // create otp with user id
-        const otp = await OtpRepo.createOtp(user.email);
-        // if otp is created, send a welcome message to user including the otp code
-        return { ...response, msg: "User created", status: 201, user };
+        // TODO: Create user profile here
+        if (user.status === 201) {
+          return {
+            ...response,
+            msg: "Signup success",
+            status: 201,
+            otp: user.otp, // TODO: Remove otp from response and send it as a mail
+            user: user.data,
+          };
+        }
+
+        return { ...response, msg: "Could not sign up", status: 400 };
       }
-      // rreturn a message saying user exists
       return { ...response, msg: "User already exists", status: 400 };
     } catch (error) {
       console.log("🚀 ~ error", error);

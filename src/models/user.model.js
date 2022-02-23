@@ -30,14 +30,6 @@ const userSchema = new Schema(
       default:
         "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
     },
-    otp: {
-      code: {
-        type: String,
-      },
-      expiresAt: {
-        type: Date,
-      },
-    },
   },
   { timestamps: true }
 );
