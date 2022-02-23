@@ -2,15 +2,40 @@ const Sentry = require("@sentry/node");
 const AuthRepo = require("../repositories/auth.repo");
 
 class AuthController {
+  /**
+   * User signs up with user type, firstname, lastname and email address
+   * @param {Express.Request} req
+   * @param {Express.Response} res
+   *  */
   static async signup(req, res) {
     try {
-      let payload = req.body;
+      const { userType, firstname, lastname, email } = req.body;
 
-      const result = await AuthRepo.signup({ email: payload.email });
-      return res.status(201).json(result);
+      if (!userType || !firstname || !lastname || !email) {
+        return res.status(400).json({ msg: "Please provide all the details" });
+      }
+
+      if (!["user", "host", "admin"].includes(userType)) {
+        return res
+          .status(400)
+          .json({ msg: "User type must be a 'user', 'host' or 'admin'" });
+      }
+
+      const result = await AuthRepo.signup({
+        email,
+        userType,
+        firstname,
+        lastname,
+      });
+      // check result status before returning a response
+      if (result.status === 201) {
+        return res.status(201).json(result);
+      }
+      return res.status(400).json(result);
     } catch (error) {
+      console.log("🚀 ~ error", error);
       Sentry.captureException(error);
-      return error;
+      return res.status(500).json(error);
     }
   }
 
