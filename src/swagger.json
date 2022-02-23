@@ -11,9 +11,9 @@
   "host": "room-finder-api.herokuapp.com",
   "basePath": "/api/v1",
   "tags": [
-    { "name": "Users", "description": "Endpoints for users" },
-    { "name": "Property", "description": "Endpoints for properties" },
-    { "name": "Bookings", "description": "Endpoints for bookings" }
+    { "name": "Host", "description": "Endpoints for hosts" },
+    { "name": "Admin", "description": "Endpoints for admins" },
+    { "name": "User", "description": "Endpoints for regular users" }
   ],
   "schemes": ["http", "https"],
   "consumes": ["application/json"],
@@ -98,7 +98,7 @@
     "/room-types": {
       "get": {
         "description": "Returns a list of all room types",
-        "tags": ["Property", "Users"],
+        "tags": ["Admin", "User", "Host"],
         "responses": {
           "200": {
             "description": "OK",
@@ -113,7 +113,7 @@
       },
       "post": {
         "description": "Creates a new room type",
-        "tags": ["Rooms", "Users"],
+        "tags": ["Admin", "Host"],
         "parameters": [
           {
             "name": "body",
@@ -135,11 +135,33 @@
         }
       }
     },
+    "/room-types/{id}": {
+      "get": {
+        "description": "Returns a single room type",
+        "tags": ["Admin", "User", "Host"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/RoomType"
+            }
+          }
+        }
+      }
+    },
 
     "/amenities": {
       "get": {
         "description": "Returns a list of all amenities",
-        "tags": ["Property", "Users"],
+        "tags": ["Admin", "User", "Host"],
         "responses": {
           "200": {
             "description": "OK",
@@ -148,6 +170,53 @@
               "items": {
                 "$ref": "#/definitions/Amenity"
               }
+            }
+          }
+        }
+      }
+    },
+    "/amenities/{id}": {
+      "get": {
+        "description": "Returns an amenity",
+        "tags": ["Admin", "Host", "User"],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "$ref": "#/definitions/Amenity"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update an amenity",
+        "parameters": [
+          {
+            "name": "Update payload",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update success",
+            "schema": {
+              "$ref": "#/definitions/Amenity"
             }
           }
         }
