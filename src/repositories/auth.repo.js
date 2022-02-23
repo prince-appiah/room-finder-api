@@ -64,10 +64,21 @@ class AuthRepo {
 
       //  if true,verify otp
       if (userExists) {
-        // else user not foud error
-      } else {
-        return { ...response, msg: "User does not exist", status: 404 };
+        // verify otp
+        const verifiedOtp = await OtpRepo.verifyOtp({ email, otp });
+        console.log("🚀 ~ verifiedOtp", verifiedOtp);
+        if (verifiedOtp.status === "valid") {
+          // send otp to email from here
+          // create token
+          return {
+            ...response,
+            msg: "Login success",
+            status: 200,
+            data: verifiedOtp.data,
+          };
+        }
       }
+      return { ...response, msg: "User does not exist", status: 404 };
     } catch (error) {
       Sentry.captureException(error);
       return error;

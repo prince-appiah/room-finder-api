@@ -1,4 +1,5 @@
 const Sentry = require("@sentry/node");
+const res = require("express/lib/response");
 const moment = require("moment");
 const otpGenerator = require("otp-generator");
 const Otp = require("../models/otp.model");
@@ -56,7 +57,59 @@ class OtpRepo {
     }
   }
 
-  static async verifyOtp() {}
+  static async verifyOtp({ email, otp }) {
+    let response = { msg: "", status: null };
+
+    let currentTime = Date.now();
+
+    try {
+      const existingOtp = await Otp.findOne({ email });
+
+      if (existingOtp) {
+        // check the expiry date
+        const expiryTime = existingOtp.expiryDate;
+        const existingCode = existingOtp.code;
+
+        // checks
+        const isExpired = expiryTime < currentTime;
+        const isNotExpired = currentTime > expiryTime;
+        const isValid = existingCode === otp;
+        const isNotValid = existingCode !== otp;
+
+        switch ((isExpired, isNotExpired, isValid, isNotValid)) {
+          case isNotExpired && isValid:
+            return {
+              ...response,
+              msg: "OTP Verified",
+              status: "valid",
+            };
+            break;
+
+          case isExpired:
+            // await Otp.findOneAndDelete({ email });
+            return { ...response, msg: "OTP Expired", status: "invalid" };
+            break;
+
+          case isNotValid:
+            return { ...response, msg: "OTP Invalid", status: "invalid" };
+            break;
+
+          default:
+            return {
+              ...response,
+              msg: "OTP Verification failed",
+              status: "invalid",
+            };
+            break;
+        }
+      }
+      return { ...response, msg: "OTP does not exist", status: "invalid" };
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
 }
 
 module.exports = OtpRepo;

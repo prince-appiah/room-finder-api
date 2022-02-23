@@ -43,7 +43,12 @@ class AuthController {
     try {
       const { email, otp } = req.body;
 
+      if (!email || !otp) {
+        return res.status(400).json({ msg: "Provide an email and otp" });
+      }
+
       const result = await AuthRepo.login({ email, otp });
+
       return res.status(201).json(result);
     } catch (error) {
       Sentry.captureException(error);
