@@ -1,3 +1,4 @@
+const Sentry = require("@sentry/node");
 const TokenConfig = require("../config/token");
 
 const requireToken = async (req, res, next) => {
@@ -13,16 +14,18 @@ const requireToken = async (req, res, next) => {
 
       const decoded = await TokenConfig.verifyToken(token);
 
-      req.user = decoded;
+      if (decoded && decoded?.exp) {
+        req.user = decoded;
+        return next();
+      }
 
-      //   verify token here
-      // set user to a req.user
-      return next();
+      return res.status(401).json({ msg: "Token expired" });
     }
 
     return res.status(401).json({ msg: "Unauthorized" });
   } catch (error) {
-    return res.status(500).json(JSON.parse(error));
+    Sentry.captureException(error);
+    return res.status(500).json(error);
   }
 };
 
