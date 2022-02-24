@@ -15,9 +15,7 @@ class TokenConfig {
       return verifiedToken;
     } catch (error) {
       Sentry.captureException(error);
-      console.log("🚀 ~ error", error);
-      // TODO check expired token error and return a user-friendly error
-      return error;
+      return false;
     }
   }
 
@@ -33,9 +31,8 @@ class TokenConfig {
 
       return signedToken;
     } catch (error) {
-      Sentry.captureException(error);
-      console.log("🚀 ~ error", error);
-      return error;
+      // Sentry.captureException(error);
+      return false;
     }
   }
 }
