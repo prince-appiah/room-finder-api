@@ -15,6 +15,18 @@ class AmenityController {
     }
   }
 
+  static async getAmenity(req, res) {
+    try {
+      const { id } = req.params;
+      const result = await AmenityRepo.getSingleAmenity(id);
+
+      return res.status(200).json(result);
+    } catch (error) {
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
+
   static async create(req, res) {
     try {
       const { name, icon } = req.body;
