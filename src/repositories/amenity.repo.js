@@ -13,6 +13,17 @@ class AmenityRepo {
     }
   }
 
+  static async getSingleAmenity(id) {
+    try {
+      const res = await amenityModel.findById(id).select("-__v");
+
+      return res;
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      captureException(error);
+    }
+  }
+
   static async createAmenity({ name, icon }) {
     try {
       const existingAmenity = await amenityModel.findOne({ name });

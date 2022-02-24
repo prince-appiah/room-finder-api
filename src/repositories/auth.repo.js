@@ -1,38 +1,48 @@
 const Sentry = require("@sentry/node");
+const TokenConfig = require("../config/token");
 
 const OtpRepo = require("./otp.repo");
 const UserRepo = require("./user.repo");
+const User = require("../models/user.model");
 
 class AuthRepo {
   /**
+   * @param {string} userType
+   * @param {string} firstName
+   * @param {string} lastName
    * @param {string} email
    */
-  static async signup({ email }) {
-    // 1. User provides dtails for signup - check if exists before moving to the next function
-    // 2. Since email is unique, use that to create new otp
-    // 3. Upon successful registration, send the created otp to the user using mail service
+  static async signup({ email, userType, firstname, lastname }) {
     try {
-      const response = { msg: "", status: null, data: null };
-      // const otp = await OtpRepo.createOtp(email);
-      // console.log("otp", otp);
-      // return otp;
+      const response = { msg: "", status: null };
+
       const existingUser = await UserRepo.findUser(email);
+
       if (!existingUser) {
-        // go ahead and create enew one
-        const user = await UserRepo.createUser({ email });
-        if (user !== null) {
-          // create otp with user id
-          const otp = await OtpRepo.createOtp(user.email);
-          // if otp is created, send a welcome message to user including the otp code
-          return { ...response, msg: "User created", status: 201, data: user };
-        } else {
-          return { ...response, msg: "Could not create user", status: 400 };
+        // go ahead and create new one
+        const user = await UserRepo.createUser({
+          email,
+          firstname,
+          lastname,
+          userType,
+        });
+
+        // TODO: Create user profile here
+        if (user.status === 201) {
+          return {
+            ...response,
+            msg: "Signup success",
+            status: 201,
+            otp: user.otp, // TODO: Remove otp from response and send it as a mail
+            user: user.data,
+          };
         }
-      } else {
-        // rreturn a message saying user exists
-        return { ...response, msg: "User already exists", status: 400 };
+
+        return { ...response, msg: "Could not sign up", status: 400 };
       }
+      return { ...response, msg: "User already exists", status: 400 };
     } catch (error) {
+      console.log("🚀 ~ error", error);
       Sentry.captureException(error);
       return error;
     }
@@ -56,10 +66,28 @@ class AuthRepo {
 
       //  if true,verify otp
       if (userExists) {
-        // else user not foud error
-      } else {
-        return { ...response, msg: "User does not exist", status: 404 };
+        // verify otp
+        const verifiedOtp = await OtpRepo.verifyOtp({ email, otp });
+        console.log("🚀 ~ verifiedOtp", verifiedOtp);
+        if (verifiedOtp.status === "valid") {
+          // send otp to email from here
+          // create token
+          const loggedInUser = await User.findOne({ where: { email } })
+            .select("-__v")
+            .lean();
+          console.log("🚀 ~ loggedInUser", loggedInUser);
+
+          const token = await TokenConfig.createToken(loggedInUser);
+          return {
+            ...response,
+            msg: "Login success",
+            status: 200,
+            data: verifiedOtp.data,
+            token,
+          };
+        }
       }
+      return { ...response, msg: "User does not exist", status: 404 };
     } catch (error) {
       Sentry.captureException(error);
       return error;

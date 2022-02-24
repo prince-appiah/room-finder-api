@@ -13,6 +13,18 @@ class RoomTypeController {
     }
   }
 
+  static async getRoomType(req, res) {
+    try {
+      const { id } = req.params;
+      const result = await RoomTypeRepo.getSingleAmenity(id);
+
+      return res.status(200).json(result);
+    } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
   static async create(req, res) {
     try {
       const { name, icon } = req.body;

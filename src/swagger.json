@@ -6,25 +6,68 @@
     "description": "This is the API for a room finder application",
     "contact": {
       "email": "pappiah00@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     }
   },
   "host": "room-finder-api.herokuapp.com",
   "basePath": "/api/v1",
   "tags": [
-    { "name": "Host", "description": "Endpoints for hosts" },
     { "name": "Admin", "description": "Endpoints for admins" },
+    { "name": "Host", "description": "Endpoints for hosts" },
     { "name": "User", "description": "Endpoints for regular users" }
   ],
   "schemes": ["http", "https"],
   "consumes": ["application/json"],
   "produces": ["application/json"],
+  "responses": {
+    "400": {
+      "description": "Bad Request",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "204": {
+      "description": "No Content - Resource deleted successfully",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "name": "Authorization",
+      "in": "header",
+      "type": "apiKey",
+      "description": "Authorization header"
+    }
+  },
   "definitions": {
     "RoomType": {
       "type": "object",
       "properties": {
         "_id": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "readOnly": true
         },
         "name": {
           "type": "string"
@@ -39,7 +82,8 @@
       "properties": {
         "_id": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "readOnly": true
         },
         "name": {
           "type": "string"
@@ -52,6 +96,11 @@
     "Property": {
       "type": "object",
       "properties": {
+        "_id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true
+        },
         "name": {
           "type": "string"
         },
@@ -79,26 +128,193 @@
             "type": "string"
           }
         },
+        "amenities": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
         "isApproved": {
           "type": "boolean",
           "default": false
         },
         "createdAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         },
         "updatedAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "name",
+        "roomType",
+        "price",
+        "description",
+        "location",
+        "stayPeriod",
+        "amenities"
+      ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "userType": {
+          "type": "string",
+          "enum": ["user", "admin", "host"]
+        },
+        "profilePicture": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
+    "Otp": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "code": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
         }
       }
     }
   },
   "paths": {
+    "/signup": {
+      "post": {
+        "tags": ["Admin", "Host", "User"],
+        "description": "Sign up a new user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": ["email", "firstname", "lastname", "userType"],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "firstname": {
+                  "type": "string"
+                },
+                "lastname": {
+                  "type": "string"
+                },
+                "userType": {
+                  "type": "string",
+                  "enum": ["admin", "host", "user"],
+                  "default": "user"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "otp": {
+                  "type": "string"
+                },
+                "user": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Admin", "Host", "User"],
+        "description": "Log in a registered user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "otp": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+
     "/room-types": {
       "get": {
         "description": "Returns a list of all room types",
         "tags": ["Admin", "User", "Host"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "OK",
@@ -108,14 +324,21 @@
                 "$ref": "#/definitions/RoomType"
               }
             }
+          },
+          "400": {
+            "$ref": "#/responses/400"
           }
         }
       },
       "post": {
         "description": "Creates a new room type",
-        "tags": ["Admin", "Host"],
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
+            "x-42c-sample": null,
             "name": "body",
             "in": "body",
             "description": "Room type object",
@@ -139,6 +362,7 @@
       "get": {
         "description": "Returns a single room type",
         "tags": ["Admin", "User", "Host"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "id",
@@ -153,6 +377,59 @@
             "schema": {
               "$ref": "#/definitions/RoomType"
             }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a room type",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RoomType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/RoomType"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletes a room type",
+        "tags": ["Admin"],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/204"
           }
         }
       }
@@ -162,6 +439,7 @@
       "get": {
         "description": "Returns a list of all amenities",
         "tags": ["Admin", "User", "Host"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "OK",
@@ -173,12 +451,42 @@
             }
           }
         }
+      },
+      "post": {
+        "description": "Create an amenity",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Amenity object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Amenity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Amenity"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          }
+        }
       }
     },
     "/amenities/{id}": {
       "get": {
         "description": "Returns an amenity",
         "tags": ["Admin", "Host", "User"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "type": "integer",
@@ -198,14 +506,30 @@
       },
       "patch": {
         "description": "Update an amenity",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
-            "name": "Update payload",
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "payload",
             "in": "body",
             "schema": {
               "type": "object",
+              "required": ["name", "icon"],
+
               "properties": {
                 "name": {
+                  "type": "string",
+                  "example": "Wi-Fi"
+                },
+                "icon": {
                   "type": "string"
                 }
               }
@@ -218,6 +542,26 @@
             "schema": {
               "$ref": "#/definitions/Amenity"
             }
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletes an amenity",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/responses/204"
           }
         }
       }
