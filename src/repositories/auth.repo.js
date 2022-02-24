@@ -1,7 +1,9 @@
 const Sentry = require("@sentry/node");
+const TokenConfig = require("../config/token");
 
 const OtpRepo = require("./otp.repo");
 const UserRepo = require("./user.repo");
+const User = require("../models/user.model");
 
 class AuthRepo {
   /**
@@ -70,11 +72,18 @@ class AuthRepo {
         if (verifiedOtp.status === "valid") {
           // send otp to email from here
           // create token
+          const loggedInUser = await User.findOne({ where: { email } })
+            .select("-__v")
+            .lean();
+          console.log("🚀 ~ loggedInUser", loggedInUser);
+
+          const token = await TokenConfig.createToken(loggedInUser);
           return {
             ...response,
             msg: "Login success",
             status: 200,
             data: verifiedOtp.data,
+            token,
           };
         }
       }

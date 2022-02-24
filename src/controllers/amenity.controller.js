@@ -5,6 +5,7 @@ const AmenityRepo = require("../repositories/amenity.repo");
 class AmenityController {
   static async listAll(req, res) {
     try {
+      console.log("req.uder", req.user);
       const result = await AmenityRepo.listAll();
 
       return res.status(200).json(result);

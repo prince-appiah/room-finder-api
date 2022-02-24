@@ -4,24 +4,24 @@ const userSchema = new Schema(
   {
     firstname: {
       type: String,
-      required: true,
+      required: [true, "Please provide your firstname"],
       maxlength: 50,
     },
     lastname: {
       type: String,
-      required: true,
+      required: [true, "Please provide your lastname"],
       maxlength: 50,
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       trim: true,
     },
     userType: {
       type: String,
       enum: ["admin", "user", "host"],
-      required: true,
+      required: [true, "User type is required"],
       default: "user",
     },
     profilePicture: {
