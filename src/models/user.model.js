@@ -4,24 +4,24 @@ const userSchema = new Schema(
   {
     firstname: {
       type: String,
-      required: true,
+      required: [true, "Please provide your firstname"],
       maxlength: 50,
     },
     lastname: {
       type: String,
-      required: true,
+      required: [true, "Please provide your lastname"],
       maxlength: 50,
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       trim: true,
     },
-    role: {
+    userType: {
       type: String,
       enum: ["admin", "user", "host"],
-      required: true,
+      required: [true, "User type is required"],
       default: "user",
     },
     profilePicture: {
@@ -29,14 +29,6 @@ const userSchema = new Schema(
       trim: true,
       default:
         "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
-    },
-    otp: {
-      code: {
-        type: String,
-      },
-      expiresAt: {
-        type: Date,
-      },
     },
   },
   { timestamps: true }

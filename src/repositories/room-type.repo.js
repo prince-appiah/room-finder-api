@@ -14,6 +14,18 @@ class RoomTypeRepo {
     }
   }
 
+  static async getSingleAmenity(id) {
+    try {
+      const result = await roomTypeModel.findById(id).select("-__v");
+
+      return result;
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
   static async createCategory({ name, icon }) {
     try {
       const existingType = await roomTypeModel.findOne({ name });
