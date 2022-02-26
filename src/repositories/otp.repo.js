@@ -29,7 +29,7 @@ class OtpRepo {
         return {
           ...response,
           msg: "New OTP generated",
-          status: 201,
+          status: 200,
           data: newOtp,
         };
       }
@@ -47,7 +47,7 @@ class OtpRepo {
       const updatedOtp = await Otp.updateOne(
         { email },
         { code, expiryDate },
-        { new: true }
+        { returnDocument: true }
       );
 
       return { ...response, msg: "OTP updated", status: 200, data: updatedOtp };

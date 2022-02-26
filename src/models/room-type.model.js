@@ -7,7 +7,7 @@ const roomTypeSchema = new Schema({
   },
   icon: {
     type: String,
-    required: false,
+    default: null,
   },
 });
 

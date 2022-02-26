@@ -4,6 +4,7 @@ const TokenConfig = require("../config/token");
 const OtpRepo = require("./otp.repo");
 const UserRepo = require("./user.repo");
 const User = require("../models/user.model");
+const ProfileRepo = require("./profile.repo");
 
 class AuthRepo {
   /**
@@ -27,8 +28,14 @@ class AuthRepo {
           userType,
         });
 
-        // TODO: Create user profile here
+        await ProfileRepo.createProfile({
+          user_id: user.data._id,
+          userType,
+        });
+
         if (user.status === 201) {
+          // TODO send a welcome message to user email
+          // TODO send otp to user email for login
           return {
             ...response,
             msg: "Signup success",
@@ -59,7 +66,7 @@ class AuthRepo {
     // 3. If it is expired, generate new one and update in the table
     // 4. If its not expired, send to the user
     try {
-      const response = { msg: "", status: null, data: null };
+      const response = { msg: "", status: null };
 
       // check if user exists
       const userExists = await UserRepo.findUser(email);
@@ -69,26 +76,48 @@ class AuthRepo {
         // verify otp
         const verifiedOtp = await OtpRepo.verifyOtp({ email, otp });
         console.log("🚀 ~ verifiedOtp", verifiedOtp);
+
         if (verifiedOtp.status === "valid") {
           // send otp to email from here
           // create token
           const loggedInUser = await User.findOne({ where: { email } })
             .select("-__v")
             .lean();
-          console.log("🚀 ~ loggedInUser", loggedInUser);
 
           const token = await TokenConfig.createToken(loggedInUser);
           return {
             ...response,
             msg: "Login success",
             status: 200,
-            data: verifiedOtp.data,
             token,
           };
         }
       }
       return { ...response, msg: "User does not exist", status: 404 };
     } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async logout({ req }) {
+    try {
+      let response = { msg: "", status: null };
+
+      const decoded = req.decoded ? req.decoded : null;
+      const authHeader = req.headers.authorization
+        ? req.headers.authorization
+        : null;
+
+      if (authHeader && decoded) {
+        delete req.decoded;
+        delete req.headers.authorization;
+
+        return { ...response, msg: "Logout success", status: 200 };
+      }
+      return { ...response, msg: "Could not log out", status: 400 };
+    } catch (error) {
+      console.log("🚀 ~ error", error);
       Sentry.captureException(error);
       return error;
     }
