@@ -4,9 +4,9 @@ const TokenConfig = require("../config/token");
 const OtpRepo = require("./otp.repo");
 const UserRepo = require("./user.repo");
 const User = require("../models/user.model");
- const ProfileRepo = require("./profile.repo");
+  const ProfileRepo = require("./profile.repo");
 const MailConfig = require("../config/mail.config");
- 
+  
 class AuthRepo {
   /**
    * @param {string} userType
@@ -29,7 +29,7 @@ class AuthRepo {
           userType,
         });
 
-         await ProfileRepo.createProfile({
+          await ProfileRepo.createProfile({
           user_id: user.data._id,
           userType,
         });
@@ -37,7 +37,7 @@ class AuthRepo {
         if (user.status === 201) {
           await MailConfig.sendWelcomeMessageToUser(user.data);
           await MailConfig.sendOtpToUser(user.otp, user.data);
- 
+  
           return {
             ...response,
             msg: "Signup success",
@@ -92,7 +92,7 @@ class AuthRepo {
             ...response,
             msg: "Login success",
             status: 200,
-             token,
+              token,
           };
         }
       }
@@ -119,7 +119,7 @@ class AuthRepo {
         return { ...response, msg: "Logout success", status: 200 };
       }
       return { ...response, msg: "Could not log out", status: 400 };
- 
+  
     } catch (error) {
       console.log("🚀 ~ error", error);
       Sentry.captureException(error);
