@@ -5,6 +5,7 @@ const OtpRepo = require("./otp.repo");
 const UserRepo = require("./user.repo");
 const User = require("../models/user.model");
 const ProfileRepo = require("./profile.repo");
+const MailConfig = require("../config/mail.config");
 
 class AuthRepo {
   /**
@@ -34,8 +35,9 @@ class AuthRepo {
         });
 
         if (user.status === 201) {
-          // TODO send a welcome message to user email
-          // TODO send otp to user email for login
+          await MailConfig.sendWelcomeMessageToUser(user.data);
+          await MailConfig.sendOtpToUser(user.otp, user.data);
+
           return {
             ...response,
             msg: "Signup success",

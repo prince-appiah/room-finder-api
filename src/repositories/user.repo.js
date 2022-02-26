@@ -1,4 +1,5 @@
 const Sentry = require("@sentry/node");
+const MailConfig = require("../config/mail.config");
 const User = require("../models/user.model");
 const OtpRepo = require("./otp.repo");
 
@@ -16,6 +17,7 @@ class UserRepo {
 
       if (user && otp.data) {
         await user.save();
+        // await MailConfig.sendOtpToUser(otp.data.code);
 
         return {
           ...response,
@@ -36,7 +38,9 @@ class UserRepo {
 
   static async findUser(email) {
     try {
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({ email });
+      // const user = await User.findOne({ where: { email } });
+      console.log("🚀 ~ user", user);
       return user != null ? true : false;
     } catch (error) {
       Sentry.captureException(error);

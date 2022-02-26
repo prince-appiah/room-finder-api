@@ -21,7 +21,7 @@ class OtpRepo {
     try {
       let response = { msg: "", status: null, data: null };
       // check if user email already exists
-      const existingOtp = await Otp.findOne({ email });
+      const existingOtp = await Otp.findOne({ email }).select("-__v");
       // create new one if it doesnt
       if (!existingOtp) {
         const newOtp = await Otp.create({ code, email, expiryDate });
@@ -48,7 +48,7 @@ class OtpRepo {
         { email },
         { code, expiryDate },
         { returnDocument: true }
-      );
+      ).select("-__v");
 
       return { ...response, msg: "OTP updated", status: 200, data: updatedOtp };
     } catch (error) {
