@@ -6,6 +6,10 @@
     "description": "This is the API for a room finder application",
     "contact": {
       "email": "pappiah00@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     }
   },
   "host": "room-finder-api.herokuapp.com",
@@ -48,6 +52,14 @@
       }
     }
   },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "name": "Authorization",
+      "in": "header",
+      "type": "apiKey",
+      "description": "Authorization header"
+    }
+  },
   "definitions": {
     "RoomType": {
       "type": "object",
@@ -70,7 +82,8 @@
       "properties": {
         "_id": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "readOnly": true
         },
         "name": {
           "type": "string"
@@ -83,6 +96,11 @@
     "Property": {
       "type": "object",
       "properties": {
+        "_id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true
+        },
         "name": {
           "type": "string"
         },
@@ -176,6 +194,28 @@
           "readOnly": true
         }
       }
+    },
+    "Otp": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "code": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
     }
   },
   "paths": {
@@ -222,6 +262,9 @@
                 "status": {
                   "type": "integer"
                 },
+                "otp": {
+                  "type": "string"
+                },
                 "user": {
                   "$ref": "#/definitions/User"
                 }
@@ -234,10 +277,44 @@
         }
       }
     },
+    "/login": {
+      "post": {
+        "tags": ["Admin", "Host", "User"],
+        "description": "Log in a registered user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "otp": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+
     "/room-types": {
       "get": {
         "description": "Returns a list of all room types",
         "tags": ["Admin", "User", "Host"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "OK",
@@ -247,12 +324,18 @@
                 "$ref": "#/definitions/RoomType"
               }
             }
+          },
+          "400": {
+            "$ref": "#/responses/400"
           }
         }
       },
       "post": {
         "description": "Creates a new room type",
-        "tags": ["Admin", "Host"],
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "x-42c-sample": null,
@@ -279,6 +362,7 @@
       "get": {
         "description": "Returns a single room type",
         "tags": ["Admin", "User", "Host"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "id",
@@ -302,6 +386,9 @@
       "patch": {
         "description": "Update a room type",
         "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "id",
@@ -352,6 +439,7 @@
       "get": {
         "description": "Returns a list of all amenities",
         "tags": ["Admin", "User", "Host"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "OK",
@@ -363,12 +451,42 @@
             }
           }
         }
+      },
+      "post": {
+        "description": "Create an amenity",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Amenity object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Amenity"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Amenity"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          }
+        }
       }
     },
     "/amenities/{id}": {
       "get": {
         "description": "Returns an amenity",
         "tags": ["Admin", "Host", "User"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "type": "integer",
@@ -389,6 +507,7 @@
       "patch": {
         "description": "Update an amenity",
         "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -429,6 +548,9 @@
       "delete": {
         "description": "Deletes an amenity",
         "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "type": "integer",
