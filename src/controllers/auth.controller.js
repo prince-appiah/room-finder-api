@@ -30,8 +30,7 @@ class AuthController {
       });
       // check result status before returning a response
       if (result.status === 201) {
-        // create profile here and bresult, return a response
-        return res.status(201).json(result);
+          return res.status(201).json(result);
       }
       return res.status(400).json(result);
     } catch (error) {
@@ -51,7 +50,7 @@ class AuthController {
 
       const result = await AuthRepo.login({ email, otp });
 
-      if (result.status === 200) {
+       if (result.status === 200) {
         return res.status(200).json(result);
       }
 
@@ -96,7 +95,7 @@ class AuthController {
       }
 
       return res.status(400).json(result);
-    } catch (error) {
+       } catch (error) {
       Sentry.captureException(error);
       return res.status(500).json(error);
     }

@@ -4,8 +4,8 @@ module.exports = {
     ADMIN: "admin",
     USER: "user",
   },
-  mailGun: {
+   mailGun: {
     API_KEY: process.env.MAILGUN_API_KEY,
     DOMAIN: process.env.MAILGUN_DOMAIN,
   },
-};
+ };
