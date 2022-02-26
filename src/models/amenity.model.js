@@ -7,7 +7,7 @@ const amenitySchema = new Schema({
   },
   icon: {
     type: String,
-    required: false,
+    default: null,
   },
 });
 
