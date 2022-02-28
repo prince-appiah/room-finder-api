@@ -6,7 +6,7 @@ mongoose.Promise = Promise;
 exports.connectDatabase = async () => {
   try {
     const dbUrl =
-      process.env.ENV === "development"
+      process.env.NODE_ENV === "development"
         ? "mongodb://localhost:27017/shelter"
         : db.URL;
 
