@@ -101,6 +101,11 @@
           "format": "int64",
           "readOnly": true
         },
+        "owner": {
+          "type": "integer",
+          "format": "int64",
+          "description": "ID of the profile - host in this case (not the user itself)"
+        },
         "name": {
           "type": "string"
         },
@@ -120,7 +125,7 @@
         },
         "stayPeriod": {
           "type": "string",
-          "enum": ["day", "week", "month", "year"]
+          "enum": ["day", "night", "week", "month", "year"]
         },
         "images": {
           "type": "array",
@@ -137,7 +142,8 @@
         },
         "isApproved": {
           "type": "boolean",
-          "default": false
+          "default": false,
+          "readOnly": true
         },
         "createdAt": {
           "type": "string",
@@ -195,6 +201,53 @@
         }
       }
     },
+    "Host": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "user_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "profilePicture": {
+          "type": "string"
+        },
+        "isVerified": {
+          "type": "boolean"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
     "Otp": {
       "type": "object",
       "properties": {
@@ -210,7 +263,7 @@
           "type": "string",
           "format": "int64"
         },
-        "createdAt": {
+        "expiryDate": {
           "type": "string",
           "format": "date-time",
           "readOnly": true
@@ -277,6 +330,49 @@
         }
       }
     },
+    "/otp": {
+      "post": {
+        "description": "Get OTP code",
+        "tags": ["Admin", "Host", "User"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": ["email"],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Otp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/login": {
       "post": {
         "tags": ["Admin", "Host", "User"],
@@ -303,7 +399,377 @@
           "201": {
             "description": "Success",
             "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "token": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "description": "Logs out current user",
+        "tags": ["Admin", "Host", "User"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/property": {
+      "get": {
+        "description": "Returns a list of properties",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["Admin", "Host", "User"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Property"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create a property",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Property",
+              "required": [
+                "owner",
+                "name",
+                "roomType",
+                "price",
+                "description",
+                "location",
+                "stayPeriod",
+                "images"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Property"
+            }
+          }
+        }
+      }
+    },
+    "/property/{id}": {
+      "get": {
+        "description": "Returns a single property",
+        "tags": ["Admin", "Host", "User"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Property ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Property"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Property"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a property",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Property ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Property"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Property"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Property"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a property",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Property ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success",
+            "schema": {
               "type": "object"
+            }
+          }
+        }
+      }
+    },
+
+    "/hosts": {
+      "get": {
+        "description": "Returns all registered hosts",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["Admin"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Host"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hosts/{id}": {
+      "get": {
+        "description": "Returns a single host",
+        "tags": ["Admin"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Host ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Host"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Update a host",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["Admin"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Host ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Host"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Host"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "string"
+                }
+              }
             }
           }
         }

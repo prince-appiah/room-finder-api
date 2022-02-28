@@ -6,6 +6,7 @@ const hostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       unique: true,
+      required: [true, "User is required"],
     },
     firstname: {
       type: String,
@@ -24,6 +25,11 @@ const hostSchema = new Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    email: {
+      type: String,
+      unique: true,
+      default: null,
     },
     phone: {
       type: String,
