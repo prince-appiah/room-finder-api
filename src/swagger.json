@@ -274,7 +274,7 @@
   "paths": {
     "/signup": {
       "post": {
-        "tags": ["Admin", "Host", "User"],
+        "tags": ["Host", "User"],
         "description": "Sign up a new user",
         "parameters": [
           {
