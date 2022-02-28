@@ -8,6 +8,7 @@ const cors = require("cors");
 const colors = require("colors");
 
 const swaggerDoc = require("./swagger.json");
+const errorHandler = require("./handlers/errorHandlers");
 
 require("dotenv").config();
 const app = express();
@@ -60,5 +61,7 @@ app.use(
     },
   })
 );
+
+app.use(errorHandler);
 
 module.exports = app;
