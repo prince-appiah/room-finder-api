@@ -28,7 +28,7 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       default:
-        "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
+        "https://res.cloudinary.com/ddnozuc0s/image/upload/v1644180173/sample.jpg",
     },
   },
   { timestamps: true }

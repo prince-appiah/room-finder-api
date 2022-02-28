@@ -15,7 +15,7 @@ class MailConfig {
 
   static async sendMail(data) {
     try {
-      await mailgunClient.messages.create(domain, data);
+      return await mailgunClient.messages.create(domain, data);
     } catch (error) {
       captureException(error);
       console.log("error sending mail: ", error);
