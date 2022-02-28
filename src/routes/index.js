@@ -6,8 +6,8 @@ module.exports = (app) => {
   let authRoutes = require("./auth.routes")(app);
   router.use(authRoutes);
 
-  let roomRoutes = require("./rooms.routes")(app);
-  router.use(roomRoutes);
+  let propertyRoutes = require("./property.routes")(app);
+  router.use(propertyRoutes);
 
   let roomTypeRoutes = require("./room-type.routes")(app);
   router.use(roomTypeRoutes);

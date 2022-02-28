@@ -1,11 +1,12 @@
 const { Schema, model } = require("mongoose");
+const Host = require("../models/host.model");
 
 const propertySchema = new Schema(
   {
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "Owner is required"],
+      ref: "Host",
+      required: [true, "Owner/Host is required"],
     },
     name: {
       type: String,
@@ -41,6 +42,12 @@ const propertySchema = new Schema(
         required: [true, "Image is required"],
       },
     ],
+    amenities: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Amenity",
+      },
+    ],
     isApproved: {
       type: Boolean,
       default: false,
@@ -50,5 +57,33 @@ const propertySchema = new Schema(
 );
 
 // Mongoose hooks here - if any
+// * this hook adds the property id to the host's properties array
+propertySchema.post("validate", async function (doc, next) {
+  try {
+    await Host.findOneAndUpdate(
+      { _id: doc.owner },
+      { $push: { properties: doc._id } }
+    );
+
+    next();
+  } catch (e) {
+    next(e);
+  }
+});
+
+// * this hook removes the property id from the host's properties array
+propertySchema.post("findOneAndRemove", async function (doc, next) {
+  try {
+    await Host.findOneAndUpdate(
+      { _id: doc.owner },
+      { $pull: { properties: doc._id } },
+      { new: true }
+    );
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = model("Property", propertySchema);
