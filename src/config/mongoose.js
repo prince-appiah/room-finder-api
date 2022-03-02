@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
+const { db } = require("./constants");
 
 mongoose.Promise = Promise;
 
 exports.connectDatabase = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/shelter", {
-      autoCreate: true,
-    });
+    const dbUrl =
+      process.env.NODE_ENV === "development"
+        ? "mongodb://localhost:27017/shelter"
+        : db.URL;
+
+    await mongoose.connect(dbUrl, { autoCreate: true });
 
     if (process.env.NODE_ENV === "development") {
       mongoose.set("debug", true);
