@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const User = require("./user.model");
 
 const hostSchema = new Schema(
   {
@@ -46,5 +47,33 @@ const hostSchema = new Schema(
 );
 
 // Mongoose hooks here - if any
+// TODO when you edit host's email, it should reflect on the main user model
+// hostSchema.post("findOneAndUpdate", async function (doc, next) {
+//   try {
+//     console.log("updating host 's user");
+//     if (doc.email) {
+//       const us = await User.findOneAndUpdate(
+//         { _id: doc.user_id },
+//         { email: doc.email }
+//       );
+
+//       console.log("us", us);
+//       next();
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// TODO delete user model when a host is deleted
+hostSchema.post("findOneAndRemove", async function (doc, next) {
+  try {
+    await User.findOneAndRemove({ _id: doc.owner });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = model("Host", hostSchema);

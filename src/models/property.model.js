@@ -22,6 +22,12 @@ const propertySchema = new Schema(
       required: [true, "Price is required"],
       maxlength: 50,
     },
+    numOfBedrooms: {
+      type: Number,
+    },
+    numOfBathrooms: {
+      type: Number,
+    },
     description: {
       type: String,
       required: [true, "Description is required"],

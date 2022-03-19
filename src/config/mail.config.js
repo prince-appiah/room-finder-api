@@ -27,6 +27,7 @@ class MailConfig {
     let msg = {
       from: "Shelter Notifications <adming@shelter.com>",
       to: "pappiah00@gmail.com",
+      // to: `${user.email}`,
       subject: "Shelter Login Code",
       html: `
             <html>
@@ -50,7 +51,8 @@ class MailConfig {
   static async sendWelcomeMessageToUser(user) {
     let msg = {
       from: "Shelter Notifications <adming@shelter.com>",
-      to: "pappiah00@gmail.com", // replace with user.email
+      to: "pappiah00@gmail.com",
+      // to: `${user.email}`,
       subject: "Yayy! Welcome to Shelter 🎉",
       html: `
             <html>

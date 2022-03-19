@@ -29,10 +29,11 @@ class AuthRepo {
           userType,
         });
 
-        await ProfileRepo.createProfile({
-          user_id: user.data._id,
-          userType,
-        });
+        // await ProfileRepo.createProfile({
+        //   user_id: user.data._id,
+        //   email: user.data.email,
+        //   userType,
+        // });
 
         if (user.status === 201) {
           await MailConfig.sendWelcomeMessageToUser(user.data);
