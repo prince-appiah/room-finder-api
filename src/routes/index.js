@@ -6,6 +6,9 @@ module.exports = (app) => {
   let authRoutes = require("./auth.routes")(app);
   router.use(authRoutes);
 
+  let userRoutes = require("./users.routes")(app);
+  router.use(userRoutes);
+
   let propertyRoutes = require("./property.routes")(app);
   router.use(propertyRoutes);
 
