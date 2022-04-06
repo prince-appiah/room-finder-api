@@ -117,6 +117,14 @@
           "type": "integer",
           "format": "int64"
         },
+        "numOfBedrooms": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numOfBathrooms": {
+          "type": "integer",
+          "format": "int64"
+        },
         "description": {
           "type": "string"
         },
