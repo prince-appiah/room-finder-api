@@ -20,6 +20,12 @@
     - [:space_invader: Tech Stack](#space_invader-tech-stack)
     - [:dart: Features](#dart-features)
     - [:book: API Endpoints](#book-api-endpoints)
+      - [Base Url - `{API_URL}/api`](#base-url---api_urlapi)
+      - [Users](#users)
+      - [Posts](#posts)
+      - [Answers](#answers)
+      - [Comments](#comments)
+      - [Tags](#tags)
   - [:toolbox: Getting Started](#toolbox-getting-started)
     - [:bangbang: Prerequisites](#bangbang-prerequisites)
     - [:key: Environment Variables](#key-environment-variables)
@@ -84,6 +90,54 @@
 - Feature 3
 
 ### :book: API Endpoints
+
+API is currently hosted on **[room-finder-api.herokuapp.com](https://room-finder-api.herokuapp.com/docs/)**
+
+You can view and read the API endpoints samples [here](https://documenter.getpostman.com/view/10053385/UVC3kTiG#f02c9fce-5737-4cd6-9d8e-ad48233102c7). This is API documentation for the back-end.
+
+But, if you want use Postman to test the API in local machine, you need to follow the steps below:
+
+- Get the Postman app from [here](https://www.getpostman.com/downloads/).
+- Download the Postman collection file in folder "/data/postman_collection"
+- Import the collection file in Postman
+- **Important:** will be necessary to setup the enviroment with the "VARIABLE"=urlAPI and "INITIAL VALUE"=http://localhost:5000, for example.
+- **Remember**: keep the Postman collection updated with the latest API endpoints.
+
+#### Base Url - `{API_URL}/api`
+
+#### Users
+
+- `GET /auth`
+- `POST /auth`
+- `POST /users/:id`
+- `GET /users`
+- `GET /users/:id`
+
+#### Posts
+
+- `GET /posts`
+- `GET /posts/top`
+- `GET /posts/tag/:tagname`
+- `GET /posts/:id`
+- `POST /posts/`
+- `DELETE /posts/:id`
+
+#### Answers
+
+- `GET /posts/answers/:id`
+- `POST /posts/answers/:id`
+- `DELETE /posts/answers/:id`
+
+#### Comments
+
+- `GET /posts/comments/:id`
+- `POST /posts/comments/:id`
+- `DELETE /posts/comments/:id`
+
+#### Tags
+
+- `GET /tags`
+- `GET /tags/:tag_name`
 
 <!-- Getting Started -->
 
