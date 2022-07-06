@@ -1,11 +1,10 @@
 const { captureException } = require("@sentry/node");
-const amenityModel = require("../models/amenity.model");
+const Amenity = require("../models/amenity.model");
 
 class AmenityRepo {
   static async listAll() {
     try {
-      const res = await amenityModel.find({}).select("-__v");
-
+      const res = await Amenity.find({}).select("-__v");
       return res;
     } catch (error) {
       console.log("🚀 ~ error", error);
@@ -15,8 +14,7 @@ class AmenityRepo {
 
   static async getSingleAmenity(id) {
     try {
-      const res = await amenityModel.findById(id).select("-__v");
-
+      const res = await Amenity.findById(id).select("-__v");
       return res;
     } catch (error) {
       console.log("🚀 ~ error", error);
@@ -26,12 +24,12 @@ class AmenityRepo {
 
   static async createAmenity({ name, icon }) {
     try {
-      const existingAmenity = await amenityModel.findOne({ name });
+      const existingAmenity = await Amenity.findOne({ name });
       if (existingAmenity) {
         return null;
       }
 
-      const result = await amenityModel.create({ name, icon });
+      const result = await Amenity.create({ name, icon });
       return result;
     } catch (error) {
       console.log("🚀 ~ error", error);
@@ -41,12 +39,12 @@ class AmenityRepo {
 
   static async updateAmenity({ id, name, icon }) {
     try {
-      const existingAmenity = await amenityModel.findOne({ _id: id });
+      const existingAmenity = await Amenity.findOne({ _id: id });
       if (!existingAmenity) {
         return null;
       }
 
-      const result = await amenityModel.findOneAndUpdate(
+      const result = await Amenity.findOneAndUpdate(
         { _id: id },
         { name, icon },
         { new: true }
@@ -61,8 +59,7 @@ class AmenityRepo {
 
   static async removeAmenity({ id }) {
     try {
-      const result = await amenityModel.findOneAndRemove({ _id: id });
-
+      const result = await Amenity.findOneAndRemove({ _id: id });
       return result;
     } catch (error) {
       console.log("🚀 ~ error", error);

@@ -21,9 +21,9 @@ const userSchema = new Schema(
     },
     userType: {
       type: String,
-      enum: ["admin", "user", "host"],
+      enum: ["admin", "customer", "host"],
       required: [true, "User type is required"],
-      default: "user",
+      default: "customer",
     },
     profilePicture: {
       type: String,

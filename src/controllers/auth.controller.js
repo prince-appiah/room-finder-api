@@ -1,6 +1,7 @@
 const Sentry = require("@sentry/node");
 const AuthRepo = require("../repositories/auth.repo");
 const OtpRepo = require("../repositories/otp.repo");
+const UserRepo = require("../repositories/user.repo");
 
 class AuthController {
   /**
@@ -16,10 +17,10 @@ class AuthController {
         return res.status(400).json({ msg: "Please provide all the details" });
       }
 
-      if (!["user", "host", "admin"].includes(userType)) {
+      if (!["customer", "host", "admin"].includes(userType)) {
         return res
           .status(400)
-          .json({ msg: "User type must be a 'user', 'host' or 'admin'" });
+          .json({ msg: "User type must be a 'customer', 'host' or 'admin'" });
       }
 
       const result = await AuthRepo.signup({
@@ -82,6 +83,13 @@ class AuthController {
   static async getOtp(req, res) {
     try {
       const { email } = req.body;
+
+      // check if email exists
+      const userExists = await UserRepo.findUser(email);
+      console.log("🚀 ~ userExists", userExists);
+      if (!userExists) {
+        return res.status(404).json({ msg: "Email does not exist" });
+      }
 
       const result = await OtpRepo.createOtp(email);
 

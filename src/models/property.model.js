@@ -12,6 +12,11 @@ const propertySchema = new Schema(
       type: String,
       required: [true, "Property name is required"],
     },
+    referenceNo: {
+      type: String,
+      unique: true,
+      default: "",
+    },
     roomType: {
       type: Schema.Types.ObjectId,
       ref: "RoomType",
@@ -24,9 +29,11 @@ const propertySchema = new Schema(
     },
     numOfBedrooms: {
       type: Number,
+      default: 0,
     },
     numOfBathrooms: {
       type: Number,
+      default: 0,
     },
     description: {
       type: String,
@@ -70,6 +77,8 @@ propertySchema.post("validate", async function (doc, next) {
       { _id: doc.owner },
       { $push: { properties: doc._id } }
     );
+
+    // TODO: generate reference number and assign to field when a property is created
 
     next();
   } catch (e) {

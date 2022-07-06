@@ -109,6 +109,9 @@
         "name": {
           "type": "string"
         },
+        "referenceNo": {
+          "type": "string"
+        },
         "roomType": {
           "type": "integer",
           "format": "int64"

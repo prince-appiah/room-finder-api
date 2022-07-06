@@ -1,10 +1,10 @@
 const Sentry = require("@sentry/node");
-const roomTypeModel = require("../models/room-type.model");
+const RoomType = require("../models/room-type.model");
 
 class RoomTypeRepo {
   static async listCategories() {
     try {
-      const result = await roomTypeModel.find({}).select("-__v");
+      const result = await RoomType.find({}).select("-__v");
 
       return result;
     } catch (error) {
@@ -16,7 +16,7 @@ class RoomTypeRepo {
 
   static async getSingleAmenity(id) {
     try {
-      const result = await roomTypeModel.findById(id).select("-__v");
+      const result = await RoomType.findById(id).select("-__v");
 
       return result;
     } catch (error) {
@@ -28,11 +28,11 @@ class RoomTypeRepo {
 
   static async createCategory({ name, icon }) {
     try {
-      const existingType = await roomTypeModel.findOne({ name });
+      const existingType = await RoomType.findOne({ name });
       if (existingType) {
         return null;
       }
-      const result = await roomTypeModel.create({ name, icon });
+      const result = await RoomType.create({ name, icon });
 
       return result;
     } catch (error) {
@@ -44,12 +44,12 @@ class RoomTypeRepo {
 
   static async updateRoomType({ id, name, icon }) {
     try {
-      const existingType = await roomTypeModel.findOne({ _id: id });
+      const existingType = await RoomType.findOne({ _id: id });
       if (!existingType) {
         return null;
       }
 
-      const result = await roomTypeModel.findOneAndUpdate(
+      const result = await RoomType.findOneAndUpdate(
         { _id: id },
         { name, icon },
         { new: true }
@@ -66,7 +66,7 @@ class RoomTypeRepo {
   static async removeRoomType({ id }) {
     try {
       //
-      const result = await roomTypeModel.findOneAndRemove({ _id: id });
+      const result = await RoomType.findOneAndRemove({ _id: id });
 
       return result;
     } catch (error) {
