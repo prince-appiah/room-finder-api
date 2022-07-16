@@ -47,7 +47,7 @@ const propertySchema = new Schema(
     stayPeriod: {
       type: String,
       required: [true, "Stay period is required"],
-      enum: ["day", "night", "week", "month", "year"],
+      enum: ["night", "week", "month", "year"],
     },
     images: [
       {

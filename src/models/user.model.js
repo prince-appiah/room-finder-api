@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const Host = require("../models/host.model");
 
 const userSchema = new Schema(
   {
@@ -38,15 +37,9 @@ const userSchema = new Schema(
 // Mongoose hooks here - if any
 userSchema.post("validate", async function (doc, next) {
   try {
-    if (doc.userType === "host") {
-      await Host.create({ user_id: doc._id, email: doc.email });
-      next();
-    }
-
-    // TODO: Create customer profile
-    // if (doc.userType === 'host') {
-    //   await Customer.create(doc)
-    //   next()
+    // if (doc.userType === "host") {
+    //   await hostModel.create({ user_id: doc._id, email: doc.email });
+    //   next();
     // }
   } catch (error) {
     next(error);

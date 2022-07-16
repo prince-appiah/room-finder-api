@@ -1,5 +1,4 @@
 const Sentry = require("@sentry/node");
-const Host = require("../models/host.model");
 const Property = require("../models/property.model");
 
 class RoomRepo {
@@ -25,8 +24,6 @@ class RoomRepo {
     images,
   }) {
     try {
-      let response = { msg: "", status: null, data: null };
-
       const property = await Property.create({
         owner,
         name,
@@ -50,7 +47,8 @@ class RoomRepo {
     try {
       const property = await Property.find({})
         .select("-__v")
-        .populate("owner", "-__v");
+        .populate("owner", "-__v")
+        .populate("roomType", "-__v");
       // .populate({ path: "owner", select: { email: 1 } });
 
       return property;
