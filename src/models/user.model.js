@@ -46,4 +46,6 @@ userSchema.post("validate", async function (doc, next) {
   }
 });
 
-module.exports = model("User", userSchema);
+const User = model("User", userSchema);
+
+module.exports = User;

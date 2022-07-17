@@ -1,4 +1,5 @@
 const Sentry = require("@sentry/node");
+const { addAbortSignal } = require("form-data");
 
 const Customer = require("../models/customer.model");
 const Host = require("../models/host.model");
@@ -98,6 +99,53 @@ class UserRepo {
       const user = await User.findOne({ email });
 
       return user != null ? true : false;
+    } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async updateUser({ user_id, firstname, lastname, userType }) {
+    try {
+      // check if user exists before updating
+      const existingUser = await User.findOne({ _id: user_id });
+
+      if (!existingUser) {
+        return { msg: "User not found", status: 404, data: null };
+      }
+
+      const updatedUser = await existingUser.update({
+        firstname: firstname ? firstname : existingUser.firstname,
+        lastname: lastname ? lastname : existingUser.lastname,
+        userType: userType ? userType : existingUser.userType,
+      });
+
+      const newUser = await User.findOne({ _id: user_id });
+
+      return { msg: "Update successful", status: 201, data: newUser };
+    } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async deleteUser({ user_id }) {
+    try {
+      // check if user exists before updating
+      const existingUser = await User.findOne({ _id: user_id });
+
+      if (!existingUser) {
+        return { msg: "User not found", status: 404 };
+      }
+
+      const deletedUser = await existingUser.remove();
+      console.log("🚀 ~ deletedUser", deletedUser);
+
+      return {
+        msg: "User deleted successfully",
+        status: 201,
+        deletedUserId: user_id,
+      };
     } catch (error) {
       Sentry.captureException(error);
       return error;

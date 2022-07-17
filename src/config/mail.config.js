@@ -31,8 +31,8 @@ class MailConfig {
 
       return response;
     } catch (error) {
-      captureException(error);
       console.log("error sending mail: ", error);
+      captureException(error);
     }
   }
 

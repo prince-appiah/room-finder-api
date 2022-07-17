@@ -10,5 +10,9 @@ module.exports = (app) => {
 
   router.post("/users", UsersController.createUser);
 
+  router.patch("/users/:user_id", UsersController.editUser);
+
+  router.delete("/users/:user_id", UsersController.deleteUser);
+
   return router;
 };
