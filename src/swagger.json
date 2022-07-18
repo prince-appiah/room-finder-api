@@ -109,6 +109,9 @@
         "name": {
           "type": "string"
         },
+        "referenceNo": {
+          "type": "string"
+        },
         "roomType": {
           "type": "integer",
           "format": "int64"
@@ -454,6 +457,248 @@
                 },
                 "status": {
                   "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/dashboard-reports": {
+      "get": {
+        "tags": ["Admin"],
+        "description": "This returns the dashboard data for the admin - this includes total users and (un)approved listings",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["Admin"],
+        "description": "Creates a user",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstname": {
+                  "type": "string"
+                },
+                "lastname": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "userType": {
+                  "type": "string",
+                  "enum": ["admin", "customer", "host"],
+                  "default": "customer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "user": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "fields": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Admin"],
+        "description": "Returns a list of all registered users",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/{user_id}": {
+      "patch": {
+        "tags": ["Admin"],
+        "description": "Updates a user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "number",
+            "required": true
+          },
+          {
+            "name": "Edit Payload",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstname": {
+                  "type": "string"
+                },
+                "lastname": {
+                  "type": "string"
+                },
+                "userType": {
+                  "type": "string",
+                  "enum": ["admin", "customer", "host"],
+                  "default": "customer"
+                }
+              },
+              "required": ["firstname", "lastname", "email", "userType"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "number"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "number"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Admin"],
+        "description": "Deletes a user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "number"
+                },
+                "deletedUserId": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "number"
                 }
               }
             }

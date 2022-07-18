@@ -17,4 +17,8 @@ module.exports = {
   db: {
     URL: `mongodb+srv://${USER}:${PASS}@${CLUSTER}/${NAME}?retryWrites=true&authSource=admin&w=majority`,
   },
+  mail: {
+    EMAIL: process.env.AUTH_EMAIL,
+    PASSWORD: process.env.AUTH_PASSWORD,
+  },
 };

@@ -1,12 +1,11 @@
 const Sentry = require("@sentry/node");
-const MailConfig = require("../config/mail.config");
+const { addAbortSignal } = require("form-data");
 
-const User = require("../models/user.model");
+const Customer = require("../models/customer.model");
 const Host = require("../models/host.model");
+const Property = require("../models/property.model");
+const User = require("../models/user.model");
 const OtpRepo = require("./otp.repo");
-const ProfileRepo = require("./profile.repo");
-const handleMongooseError = require("../handlers/handleMongooseError");
-const errorHandler = require("../handlers/errorHandlers");
 
 class UserRepo {
   static async createUser({ email, firstname, lastname, userType }) {
@@ -14,14 +13,32 @@ class UserRepo {
       let response = { msg: "", status: null, otp: null, data: null };
 
       let payload = { firstname, lastname, email, userType };
-      // existing user has been checked already, go ahead and create the user
 
+      // existing user has been checked already, go ahead and create the user
       const user = new User(payload);
       // create otp with user email
       const otp = await OtpRepo.createOtp(user.email);
 
       if (user && otp.data) {
         await user.save();
+        // create host/customer based on userType
+        if (userType === "host") {
+          await Host.create({
+            user_id: user._id,
+            firstname,
+            lastname,
+            email,
+          });
+        }
+
+        if (userType === "customer") {
+          await Customer.create({
+            user_id: user._id,
+            firstname,
+            lastname,
+            email,
+          });
+        }
 
         return {
           ...response,
@@ -33,6 +50,44 @@ class UserRepo {
       }
 
       return { ...response, msg: "Could not create user", status: 400 };
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  // return number of registered users, approved and unapproved listings
+  static async getAdminDashboardReport() {
+    try {
+      const properties = await Property.find().select("-__v");
+      const approvedListings = properties.filter(
+        (item) => item.isApproved
+      ).length;
+      const pendingApprovals = properties.filter(
+        (item) => !item.isApproved
+      ).length;
+
+      const users = await User.count();
+
+      const response = [
+        { title: "Registered Users", value: users },
+        { title: "Approved Listings", value: approvedListings },
+        { title: "Pending Approvals", value: pendingApprovals },
+      ];
+
+      return response;
+    } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async getAllUsers() {
+    try {
+      const users = await User.find().select("-__v");
+
+      return users;
     } catch (error) {
       Sentry.captureException(error);
       return error;
@@ -50,126 +105,47 @@ class UserRepo {
     }
   }
 
-  static async createHost({ firstname, lastname, email, userType }) {
+  static async updateUser({ user_id, firstname, lastname, userType }) {
     try {
-      let response = { msg: "", status: null, data: null };
+      // check if user exists before updating
+      const existingUser = await User.findOne({ _id: user_id });
 
-      const existingUser = await this.findUser(email);
-
-      if (existingUser) {
-        return {
-          ...response,
-          msg: "User already exists",
-          status: 400,
-        };
+      if (!existingUser) {
+        return { msg: "User not found", status: 404, data: null };
       }
 
-      // go ahead, crete a user model and a host model
-      const user = await this.createUser({
-        email,
-        firstname,
-        lastname,
-        userType,
+      const updatedUser = await existingUser.update({
+        firstname: firstname ? firstname : existingUser.firstname,
+        lastname: lastname ? lastname : existingUser.lastname,
+        userType: userType ? userType : existingUser.userType,
       });
 
-      // const prof = await ProfileRepo.createProfile({
-      //   user_id: user.data._id,
-      //   email: user.data.email,
-      //   userType,
-      // });
-      // console.log("🚀 ~ prof", prof);
+      const newUser = await User.findOne({ _id: user_id });
 
-      if (user.status === 201) {
-        await MailConfig.sendWelcomeMessageToUser(user.data);
-        await MailConfig.sendOtpToUser(user.otp, user.data);
-
-        return {
-          ...response,
-          msg: "Host created",
-          status: 201,
-          otp: user.otp,
-          data: user.data,
-        };
-      }
-
-      return { ...response, msg: "Could not create host", status: 400 };
+      return { msg: "Update successful", status: 201, data: newUser };
     } catch (error) {
       Sentry.captureException(error);
       return error;
     }
   }
 
-  static async getAllHosts() {
+  static async deleteUser({ user_id }) {
     try {
-      const hosts = await Host.find({}).select("-__v");
+      // check if user exists before updating
+      const existingUser = await User.findOne({ _id: user_id });
 
-      return hosts;
-    } catch (error) {
-      Sentry.captureException(error);
-      return error;
-    }
-  }
-
-  static async getHost(id) {
-    try {
-      let response = { msg: "", status: null, data: null };
-
-      const host = await Host.findOne({ _id: id }).select("-__v");
-
-      if (!host) {
-        return { ...response, msg: "Host not found", status: 404 };
+      if (!existingUser) {
+        return { msg: "User not found", status: 404 };
       }
 
-      return { ...response, msg: "Success", status: 200, data: host };
-    } catch (error) {
-      Sentry.captureException(error);
-      return error;
-    }
-  }
+      const deletedUser = await existingUser.remove();
+      console.log("🚀 ~ deletedUser", deletedUser);
 
-  static async updateHost(id, payload) {
-    try {
-      let response = { msg: "", status: null, data: null };
-
-      const existingHost = await Host.findOne({ _id: id });
-      if (!existingHost) {
-        return { ...response, msg: "Host not found", status: 404 };
-      }
-
-      const updatedHost = await Host.findOneAndUpdate({ _id: id }, payload, {
-        new: true,
-      });
-      // const updatedHost=await Host.findByIdAndUpdate(id, update, options)
-
-      if (updatedHost) {
-        return {
-          ...response,
-          msg: "Host updated",
-          status: 200,
-          data: updatedHost,
-        };
-      }
-      return { ...response, msg: "Could not update host", status: 400 };
-    } catch (error) {
-      console.log("🚀 ~ error", error);
-      Sentry.captureException(error);
-      return error;
-    }
-  }
-
-  static async deleteHost(id) {
-    try {
-      let response = { msg: "", status: null, data: null };
-
-      const existingHost = await Host.findOne({ _id: id });
-
-      if (existingHost) {
-        await Host.findOneAndDelete({ _id: id });
-
-        return { ...response, msg: "Host deleted", status: 200 };
-      }
-
-      return { ...response, msg: "Host not found", status: 404 };
+      return {
+        msg: "User deleted successfully",
+        status: 201,
+        deletedUserId: user_id,
+      };
     } catch (error) {
       Sentry.captureException(error);
       return error;

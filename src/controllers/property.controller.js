@@ -12,9 +12,11 @@ class RoomController {
         description,
         location,
         stayPeriod,
+        amenities,
         images,
+        numOfBathrooms,
+        numOfBedrooms,
       } = req.body;
-      console.log("🚀 ~ req.body", req.body);
 
       if (
         !owner ||
@@ -24,7 +26,10 @@ class RoomController {
         !description ||
         !location ||
         !stayPeriod ||
-        !images
+        !images ||
+        !amenities ||
+        !numOfBathrooms ||
+        !numOfBedrooms
       ) {
         return res.status(400).json({ msg: "Please fill all fields" });
       }

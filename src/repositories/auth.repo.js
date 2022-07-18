@@ -78,13 +78,12 @@ class AuthRepo {
       if (userExists) {
         // verify otp
         const verifiedOtp = await OtpRepo.verifyOtp({ email, otp });
-        console.log("🚀 ~ verifiedOtp", verifiedOtp);
 
         if (verifiedOtp.status === "valid") {
           // send otp to email from here
           // create token
           const loggedInUser = await User.findOne({ email })
-            .select("-__v")
+            .select("-__v") // replace _id with a unique uuid
             .lean();
 
           const token = await TokenConfig.createToken(loggedInUser);
@@ -106,7 +105,7 @@ class AuthRepo {
         }
         return {
           ...response,
-          msg: "OTP expired, please generate a new OTP",
+          msg: "OTP is incorrect",
           status: 400,
         };
       }
