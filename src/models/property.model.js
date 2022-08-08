@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 const Host = require("../models/host.model");
+const generator = require("otp-generator");
 
 const propertySchema = new Schema(
   {
@@ -15,7 +16,7 @@ const propertySchema = new Schema(
     referenceNo: {
       type: String,
       unique: true,
-      default: "",
+      required: [true, "Reference number is required"],
     },
     roomType: {
       type: Schema.Types.ObjectId,
@@ -51,8 +52,8 @@ const propertySchema = new Schema(
     },
     images: [
       {
-        type: String,
-        required: [true, "Image is required"],
+        type: Schema.Types.ObjectId,
+        ref: "Image",
       },
     ],
     amenities: [
@@ -70,7 +71,6 @@ const propertySchema = new Schema(
 );
 
 // Mongoose hooks here - if any
-// * this hook adds the property id to the host's properties array
 propertySchema.post("validate", async function (doc, next) {
   try {
     await Host.findOneAndUpdate(

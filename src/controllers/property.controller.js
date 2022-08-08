@@ -1,8 +1,10 @@
 const Sentry = require("@sentry/node");
 const PropertyRepo = require("../repositories/property.repo");
+const UploadController = require("./upload.controller");
+const { uploadImage } = require("./upload.controller");
 
 class RoomController {
-  static async addRoom(req, res) {
+  static async addProperty(req, res) {
     try {
       const {
         owner,
@@ -13,10 +15,19 @@ class RoomController {
         location,
         stayPeriod,
         amenities,
-        images,
         numOfBathrooms,
         numOfBedrooms,
+        referenceNo,
       } = req.body;
+
+      const pictures = req.files;
+      console.log("🚀 ~ pictures", pictures);
+
+      if (!req.files || req.files.length < 2) {
+        return res.status(400).json({
+          msg: "Upload images of the property and must be more than one",
+        });
+      }
 
       if (
         !owner ||
@@ -26,13 +37,15 @@ class RoomController {
         !description ||
         !location ||
         !stayPeriod ||
-        !images ||
         !amenities ||
         !numOfBathrooms ||
-        !numOfBedrooms
+        !numOfBedrooms ||
+        !referenceNo
       ) {
         return res.status(400).json({ msg: "Please fill all fields" });
       }
+
+      // todo upload the images ater property has been created - consider moving to the create room function
 
       const result = await PropertyRepo.createRoom({
         owner,
@@ -42,7 +55,9 @@ class RoomController {
         description,
         location,
         stayPeriod,
-        images,
+        amenities,
+        pictures,
+        referenceNo,
       });
 
       return res.status(201).json(result);

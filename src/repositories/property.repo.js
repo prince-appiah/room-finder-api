@@ -1,4 +1,6 @@
 const Sentry = require("@sentry/node");
+const UploadController = require("../controllers/upload.controller");
+const Image = require("../models/image.model");
 const Property = require("../models/property.model");
 
 class RoomRepo {
@@ -20,11 +22,24 @@ class RoomRepo {
     price,
     description,
     location,
+    amenities,
     stayPeriod,
-    images,
+    pictures,
+    referenceNo,
   }) {
     try {
-      const property = await Property.create({
+      const images = [];
+
+      for (const pic of pictures) {
+        const response = await UploadController.uploadImage(
+          pic.path,
+          "/properties"
+        );
+        const newImage = await Image.create(response);
+        images.push(newImage._id);
+      }
+
+      const property = new Property({
         owner,
         name,
         roomType,
@@ -33,9 +48,20 @@ class RoomRepo {
         location,
         stayPeriod,
         images,
+        amenities,
+        referenceNo,
       });
 
-      return property;
+      await property.save();
+
+      const createdProperty = await Property.find({ _id: property._id })
+        .select("-__v")
+        .populate("owner", "-__v")
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
+
+      return createdProperty;
     } catch (error) {
       console.log("🚀 ~ error", error);
       Sentry.captureException(error);
@@ -48,7 +74,10 @@ class RoomRepo {
       const property = await Property.find({})
         .select("-__v")
         .populate("owner", "-__v")
-        .populate("roomType", "-__v");
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
+
       // .populate({ path: "owner", select: { email: 1 } });
 
       return property;
@@ -65,9 +94,9 @@ class RoomRepo {
       const property = await Property.findOne({ _id: id })
         .select("-__v")
         .populate("owner", "-__v")
-        .populate("roomType", "-__v");
-      // .populate("owner", { firstname: 1 })
-      // .populate({ path: "owner" });
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
 
       if (property) {
         return { ...response, msg: "Success", status: 200, data: property };

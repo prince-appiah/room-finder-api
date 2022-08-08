@@ -1,6 +1,7 @@
 const errorHandler = (err, req, res, next) => {
   try {
     console.log("You hit the error handler");
+    console.log("🚀 ~ err", err);
     console.log("🚀 ~ err.code", err.code);
     console.log("🚀 ~ err.name", err.name);
 
