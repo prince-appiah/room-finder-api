@@ -136,6 +136,43 @@ class RoomRepo {
     }
   }
 
+  static async approveListing({ property_id, isApproved }) {
+    try {
+      let response = { msg: "", status: null, data: null };
+
+      // check if room exists
+      const existingProperty = await Property.findOne({ _id: property_id });
+
+      if (!existingProperty) {
+        return { ...response, msg: "Property not found", status: 404 };
+      }
+
+      const result = await Property.findOneAndUpdate(
+        { _id: property_id },
+        { isApproved },
+        { new: true }
+      );
+
+      const updatedProperty = await Property.findOne({ _id: result._id })
+        .select("-__v")
+        .populate("owner", "-__v")
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
+
+      return {
+        ...response,
+        msg: "Property approved",
+        status: 200,
+        data: updatedProperty,
+      };
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
   static async deleteProperty(id) {
     try {
       let response = { msg: "", status: null, data: null };

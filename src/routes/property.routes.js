@@ -21,6 +21,13 @@ module.exports = (app) => {
   router.get("/property/:id", PropertyController.findProperty);
 
   router.patch(
+    "/approve",
+    requireToken,
+    allowRoles([roles.ADMIN]),
+    PropertyController.approveListing
+  );
+
+  router.patch(
     "/property/:id",
     requireToken,
     allowRoles([roles.ADMIN]),
