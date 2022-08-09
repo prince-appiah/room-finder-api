@@ -21,7 +21,6 @@ class RoomController {
       } = req.body;
 
       const pictures = req.files;
-      console.log("🚀 ~ pictures", pictures);
 
       if (!req.files || req.files.length < 2) {
         return res.status(400).json({
@@ -58,6 +57,8 @@ class RoomController {
         amenities,
         pictures,
         referenceNo,
+        numOfBathrooms,
+        numOfBedrooms,
       });
 
       return res.status(201).json(result);
@@ -148,10 +149,15 @@ class RoomController {
   static async deleteProperty(req, res) {
     try {
       const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ msg: "Property ID is required" });
+      }
+
       const result = await PropertyRepo.deleteProperty(id);
 
       if (result.status === 200) {
-        return res.status(204).json(result);
+        return res.status(200).json(result);
       }
 
       if (result.status === 404) {

@@ -26,6 +26,8 @@ class RoomRepo {
     stayPeriod,
     pictures,
     referenceNo,
+    numOfBathrooms,
+    numOfBedrooms,
   }) {
     try {
       const images = [];
@@ -50,11 +52,13 @@ class RoomRepo {
         images,
         amenities,
         referenceNo,
+        numOfBathrooms,
+        numOfBedrooms,
       });
 
       await property.save();
 
-      const createdProperty = await Property.find({ _id: property._id })
+      const createdProperty = await Property.findOne({ _id: property._id })
         .select("-__v")
         .populate("owner", "-__v")
         .populate("roomType", "-__v")
@@ -189,7 +193,7 @@ class RoomRepo {
           ...response,
           msg: "Property deleted",
           status: 200,
-          data: result,
+          deleted_property_id: id,
         };
       }
       return { ...response, msg: "Could not delete property", status: 400 };

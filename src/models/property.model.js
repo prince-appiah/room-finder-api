@@ -30,11 +30,11 @@ const propertySchema = new Schema(
     },
     numOfBedrooms: {
       type: Number,
-      default: 0,
+      required: true,
     },
     numOfBathrooms: {
       type: Number,
-      default: 0,
+      required: true,
     },
     description: {
       type: String,

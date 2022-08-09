@@ -131,7 +131,7 @@ class UserRepo {
 
   static async deleteUser({ user_id }) {
     try {
-      // check if user exists before updating
+      // check if user exists before deleting
       const existingUser = await User.findOne({ _id: user_id });
 
       if (!existingUser) {
