@@ -129,13 +129,34 @@ class RoomController {
       const { id } = req.params;
 
       // TODO: validate the data
-      const payload = req.body;
+      const {
+        name,
+        roomType,
+        price,
+        description,
+        location,
+        stayPeriod,
+        amenities,
+        numOfBathrooms,
+        numOfBedrooms,
+      } = req.body;
 
       if (!id) {
         return res.status(400).json({ msg: "Property ID is required" });
       }
 
-      const result = await PropertyRepo.updateProperty(id, payload);
+      const result = await PropertyRepo.updateProperty({
+        id,
+        name,
+        roomType,
+        price,
+        description,
+        location,
+        stayPeriod,
+        amenities,
+        numOfBathrooms,
+        numOfBedrooms,
+      });
 
       if (result.status === 200) {
         return res.status(200).json(result);

@@ -113,8 +113,21 @@ class RoomRepo {
     }
   }
 
-  static async updateProperty(id, payload) {
+  static async updateProperty({
+    id,
+    name,
+    roomType,
+    price,
+    description,
+    location,
+    stayPeriod,
+    amenities,
+    numOfBathrooms,
+    numOfBedrooms,
+  }) {
     try {
+      // TODO write function to merge array of ids for amenities
+      // TODO write function to add and remove images from cloudinary
       let response = { msg: "", status: null, data: null };
 
       // check if room exists
@@ -124,9 +137,23 @@ class RoomRepo {
         return { ...response, msg: "Property not found", status: 404 };
       }
 
-      const result = await Property.findOneAndUpdate({ _id: id }, payload, {
-        new: true,
-      });
+      const result = await Property.findOneAndUpdate(
+        { _id: id },
+        {
+          name,
+          roomType,
+          price,
+          description,
+          location,
+          stayPeriod,
+          amenities,
+          numOfBathrooms,
+          numOfBedrooms,
+        },
+        {
+          new: true,
+        }
+      );
       return {
         ...response,
         msg: "Update successful",

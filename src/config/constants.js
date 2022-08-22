@@ -7,7 +7,7 @@ module.exports = {
   roles: {
     HOST: "host",
     ADMIN: "admin",
-    USER: "user",
+    USER: "customer",
   },
   mailGun: {
     API_KEY: process.env.MAILGUN_API_KEY,
