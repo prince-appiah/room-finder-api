@@ -1,8 +1,7 @@
 const errorHandler = (err, req, res, next) => {
   try {
     console.log("You hit the error handler");
-    console.log("🚀 ~ err.code", err.code);
-    console.log("🚀 ~ err.name", err.name);
+    console.log("🚀 ~ err", err);
 
     if (err.name === "ValidationError") {
       const response = handleValidationError(err, res);

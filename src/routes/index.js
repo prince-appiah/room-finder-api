@@ -9,6 +9,9 @@ module.exports = (app) => {
   let hostRoutes = require("./hosts.routes")(app);
   router.use(hostRoutes);
 
+  let uploadRoutes = require("./upload.routes")(app);
+  router.use(uploadRoutes);
+
   let userRoutes = require("./users.routes")(app);
   router.use(userRoutes);
 

@@ -18,6 +18,16 @@ const userSchema = new Schema(
       unique: true,
       trim: true,
     },
+    phone: {
+      type: String,
+    },
+    location: {
+      type: String,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     userType: {
       type: String,
       enum: ["admin", "customer", "host"],

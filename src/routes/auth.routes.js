@@ -1,5 +1,8 @@
 const express = require("express");
+const { roles } = require("../config/constants");
 const AuthController = require("../controllers/auth.controller");
+const allowRoles = require("../middlewares/allowRoles");
+const requireToken = require("../middlewares/requireToken");
 const OtpRepo = require("../repositories/otp.repo");
 
 module.exports = (app) => {
@@ -8,7 +11,12 @@ module.exports = (app) => {
   router.post("/login", AuthController.login);
   router.post("/signup", AuthController.signup);
   router.post("/otp", AuthController.getOtp);
-  router.post("/logout", AuthController.logout);
+  router.get(
+    "/logout",
+    requireToken,
+    allowRoles([roles.ADMIN, roles.HOST, roles.USER]),
+    AuthController.logout
+  );
 
   return router;
 };

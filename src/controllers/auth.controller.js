@@ -67,8 +67,10 @@ class AuthController {
   }
 
   static async logout(req, res) {
+    console.log("hitting logout");
     try {
       const result = await AuthRepo.logout({ req });
+      console.log("🚀 ~ result", result);
 
       if (result.status === 200) {
         return res.status(200).json(result);

@@ -121,13 +121,13 @@ class AuthRepo {
     try {
       let response = { msg: "", status: null };
 
-      const decoded = req.decoded ? req.decoded : null;
+      const decoded = req.user ? req.user : null;
       const authHeader = req.headers.authorization
         ? req.headers.authorization
         : null;
 
       if (authHeader && decoded) {
-        delete req.decoded;
+        delete req.user;
         delete req.headers.authorization;
 
         return { ...response, msg: "Logout success", status: 200 };

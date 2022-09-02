@@ -27,6 +27,9 @@ app.use(
   swaggerUi.setup(swaggerDoc, { customSiteTitle: "Shelter API" })
 );
 
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
+
 Sentry.init({
   dsn: process.env.DSN,
   integrations: [

@@ -898,6 +898,75 @@
       }
     },
 
+    "/approve": {
+      "patch": {
+        "description": "Update a property",
+        "tags": ["Admin"],
+        "security": [{ "BearerAuth": [] }],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "property_id",
+            "in": "query",
+            "description": "Property ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "required": ["isApproved"],
+              "properties": {
+                "isApproved": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Property"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Property"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "/hosts": {
       "get": {
         "description": "Returns all registered hosts",
