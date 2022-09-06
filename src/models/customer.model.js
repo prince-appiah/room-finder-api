@@ -36,7 +36,8 @@ const customerSchema = new Schema(
     bookings: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Property", // this must refer to bookings model
+        ref: "Booking", // this must refer to bookings model
+        require: true,
       },
     ],
   },

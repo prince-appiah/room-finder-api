@@ -93,6 +93,38 @@
         }
       }
     },
+    "Booking": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true
+        },
+        "customer": {
+          "type": "object",
+          "$ref": "#/definitions/Customer"
+        },
+        "property": {
+          "type": "object",
+          "$ref": "#/definitions/Property"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "complete", "cancelled"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
     "Property": {
       "type": "object",
       "properties": {
@@ -176,6 +208,48 @@
         "stayPeriod",
         "amenities"
       ]
+    },
+    "Customer": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "user_id": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "bookings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Property"
+          }
+        },
+        "profilePicture": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
     },
     "User": {
       "type": "object",
@@ -555,6 +629,26 @@
               "type": "array",
               "items": {
                 "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer-bookings": {
+      "get": {
+        "tags": ["User"],
+        "description": "Returns a list of bookings belonging to the logged in customer",
+        "produces": ["application/json"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/Booking"
               }
             }
           }
