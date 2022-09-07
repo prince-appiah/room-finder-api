@@ -7,7 +7,7 @@ module.exports = {
   roles: {
     HOST: "host",
     ADMIN: "admin",
-    USER: "user",
+    USER: "customer",
   },
   mailGun: {
     API_KEY: process.env.MAILGUN_API_KEY,
@@ -16,5 +16,14 @@ module.exports = {
   },
   db: {
     URL: `mongodb+srv://${USER}:${PASS}@${CLUSTER}/${NAME}?retryWrites=true&authSource=admin&w=majority`,
+  },
+  mail: {
+    EMAIL: process.env.AUTH_EMAIL,
+    PASSWORD: process.env.AUTH_PASSWORD,
+  },
+  cloud: {
+    API_KEY: process.env.CLOUDINARY_API_KEY,
+    API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   },
 };

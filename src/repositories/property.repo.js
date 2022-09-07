@@ -1,4 +1,6 @@
 const Sentry = require("@sentry/node");
+const UploadController = require("../controllers/upload.controller");
+const Image = require("../models/image.model");
 const Property = require("../models/property.model");
 
 class RoomRepo {
@@ -20,13 +22,26 @@ class RoomRepo {
     price,
     description,
     location,
+    amenities,
     stayPeriod,
-    images,
+    pictures,
+    referenceNo,
+    numOfBathrooms,
+    numOfBedrooms,
   }) {
     try {
-      let response = { msg: "", status: null, data: null };
+      const images = [];
 
-      const property = await Property.create({
+      for (const pic of pictures) {
+        const response = await UploadController.uploadImage(
+          pic.path,
+          "/properties"
+        );
+        const newImage = await Image.create(response);
+        images.push(newImage._id);
+      }
+
+      const property = new Property({
         owner,
         name,
         roomType,
@@ -35,9 +50,22 @@ class RoomRepo {
         location,
         stayPeriod,
         images,
+        amenities,
+        referenceNo,
+        numOfBathrooms,
+        numOfBedrooms,
       });
 
-      return property;
+      await property.save();
+
+      const createdProperty = await Property.findOne({ _id: property._id })
+        .select("-__v")
+        .populate("owner", "-__v")
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
+
+      return createdProperty;
     } catch (error) {
       console.log("🚀 ~ error", error);
       Sentry.captureException(error);
@@ -47,7 +75,13 @@ class RoomRepo {
 
   static async getProperties() {
     try {
-      const property = await Property.find({}).select("-__v");
+      const property = await Property.find({})
+        .select("-__v")
+        .populate("owner", "-__v")
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
+
       // .populate({ path: "owner", select: { email: 1 } });
 
       return property;
@@ -61,20 +95,39 @@ class RoomRepo {
     try {
       let response = { msg: "", status: null, data: null };
 
-      const property = await Property.findOne({ _id: id }).select("-__v");
+      const property = await Property.findOne({ _id: id })
+        .select("-__v")
+        .populate("owner", "-__v")
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
 
       if (property) {
         return { ...response, msg: "Success", status: 200, data: property };
       }
       return { ...response, msg: "Property not found", status: 404 };
     } catch (error) {
+      console.log("🚀 ~ error", error);
       Sentry.captureException(error);
       return error;
     }
   }
 
-  static async updateProperty(id, payload) {
+  static async updateProperty({
+    id,
+    name,
+    roomType,
+    price,
+    description,
+    location,
+    stayPeriod,
+    amenities,
+    numOfBathrooms,
+    numOfBedrooms,
+  }) {
     try {
+      // TODO write function to merge array of ids for amenities
+      // TODO write function to add and remove images from cloudinary
       let response = { msg: "", status: null, data: null };
 
       // check if room exists
@@ -84,14 +137,65 @@ class RoomRepo {
         return { ...response, msg: "Property not found", status: 404 };
       }
 
-      const result = await Property.findOneAndUpdate({ _id: id }, payload, {
-        new: true,
-      });
+      const result = await Property.findOneAndUpdate(
+        { _id: id },
+        {
+          name,
+          roomType,
+          price,
+          description,
+          location,
+          stayPeriod,
+          amenities,
+          numOfBathrooms,
+          numOfBedrooms,
+        },
+        {
+          new: true,
+        }
+      );
       return {
         ...response,
         msg: "Update successful",
         status: 200,
         data: result,
+      };
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async approveListing({ property_id, isApproved }) {
+    try {
+      let response = { msg: "", status: null, data: null };
+
+      // check if room exists
+      const existingProperty = await Property.findOne({ _id: property_id });
+
+      if (!existingProperty) {
+        return { ...response, msg: "Property not found", status: 404 };
+      }
+
+      const result = await Property.findOneAndUpdate(
+        { _id: property_id },
+        { isApproved },
+        { new: true }
+      );
+
+      const updatedProperty = await Property.findOne({ _id: result._id })
+        .select("-__v")
+        .populate("owner", "-__v")
+        .populate("roomType", "-__v")
+        .populate("images", "-__v")
+        .populate("amenities", "-__v");
+
+      return {
+        ...response,
+        msg: "Property approved",
+        status: 200,
+        data: updatedProperty,
       };
     } catch (error) {
       console.log("🚀 ~ error", error);
@@ -116,7 +220,7 @@ class RoomRepo {
           ...response,
           msg: "Property deleted",
           status: 200,
-          data: result,
+          deleted_property_id: id,
         };
       }
       return { ...response, msg: "Could not delete property", status: 400 };

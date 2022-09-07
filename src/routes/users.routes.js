@@ -4,15 +4,15 @@ const UsersController = require("../controllers/users.controller");
 module.exports = (app) => {
   let router = express.Router();
 
-  router.get("/hosts", UsersController.getAllHosts);
+  router.get("/dashboard-reports", UsersController.getAdminDashboardReport);
 
-  router.post("/hosts", UsersController.createHost);
+  router.get("/users", UsersController.getAllUsers);
 
-  router.get("/hosts/:id", UsersController.getHost);
+  router.post("/users", UsersController.createUser);
 
-  router.patch("/hosts/:id", UsersController.updateHost);
+  router.patch("/users/:user_id", UsersController.editUser);
 
-  router.delete("/hosts/:id", UsersController.deleteHost);
+  router.delete("/users/:user_id", UsersController.deleteUser);
 
   return router;
 };
