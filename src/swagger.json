@@ -635,6 +635,57 @@
         }
       }
     },
+
+    "/bookings": {
+      "get": {
+        "tags": ["Admin"],
+        "description": "Returns all bookings",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Booking"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/customer-bookings/{property_id}": {
+      "get": {
+        "description": "Checks if property has already been booked - booking exists when a booking reference is returned",
+        "tags": ["User"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Booking"
+            }
+          }
+        }
+      },
+      "patch": {
+        "description": "Cancels booking session",
+        "tags": ["User"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Booking"
+            }
+          }
+        }
+      }
+    },
+
     "/customer-bookings": {
       "get": {
         "tags": ["User"],
