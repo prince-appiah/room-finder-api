@@ -32,7 +32,6 @@ const customerSchema = new Schema(
       unique: true,
       default: null,
     },
-
     bookings: [
       {
         type: Schema.Types.ObjectId,

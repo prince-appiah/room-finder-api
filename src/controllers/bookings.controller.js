@@ -4,7 +4,8 @@ const BookingRepo = require("../repositories/booking.repo");
 class BookingController {
   static async getAllBookings(req, res) {
     try {
-      return res.status(200).json({ msg: "bookings loaded" });
+      const response = await BookingRepo.getAllBookings();
+      return res.status(200).json(response);
     } catch (error) {
       Sentry.captureException(error);
       return res.status(500).json(error);
@@ -12,9 +13,10 @@ class BookingController {
   }
   static async getCustomerBookings(req, res) {
     try {
-      const customer = req.user._id;
+      const user_id = req.user._id;
+      console.log("🚀 ~ user_id", user_id);
 
-      const response = await BookingRepo.getCustomerBookings({ customer });
+      const response = await BookingRepo.getCustomerBookings({ user_id });
       return res.status(200).json(response);
     } catch (error) {
       console.log("🚀 ~ error", error);
@@ -25,7 +27,8 @@ class BookingController {
 
   static async addBooking(req, res) {
     const { property } = req.query; // this should be the property reference number
-    const customer = req.user._id;
+    const user_id = req.user._id;
+    console.log("🚀 ~ user_id", user_id);
 
     if (!property) {
       return res.status(400).json({ msg: "Property ID is required" });
@@ -34,7 +37,7 @@ class BookingController {
     try {
       const response = await BookingRepo.createBooking({
         property,
-        customer,
+        user_id,
       });
 
       return res.status(200).json(response);

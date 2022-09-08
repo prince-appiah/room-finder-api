@@ -8,7 +8,12 @@ const requireToken = require("../middlewares/requireToken");
 module.exports = (app) => {
   let router = express.Router();
 
-  router.get("/bookings", BookingController.getAllBookings);
+  router.get(
+    "/bookings",
+    requireToken,
+    allowRoles([roles.ADMIN]),
+    BookingController.getAllBookings
+  );
 
   router.get(
     "/customer-bookings",

@@ -15,7 +15,7 @@ const bookingSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "complete", "cancelled"],
+      enum: ["pending", "completed", "cancelled"],
       default: "pending",
     },
   },
@@ -24,12 +24,16 @@ const bookingSchema = new Schema(
 
 // Mongoose hooks here - if any
 bookingSchema.post("validate", async function (doc, next) {
+  console.log("🚀 ~ doc", doc);
   try {
-    await Customer.findOneAndUpdate(
-      { user_id: doc.customer },
-      { $push: { bookings: doc._id } }
+    const cus = await Customer.findOne({ user_id: doc.customer });
+    console.log("🚀 ~ cus", cus);
+    const updatedCustomer = await Customer.findOneAndUpdate(
+      { _id: doc.customer },
+      { $push: { bookings: doc._id } },
+      { new: true }
     );
-
+    console.log("🚀 ~ updatedCustomer", updatedCustomer);
     next();
   } catch (e) {
     console.log("🚀 ~ e", e);
