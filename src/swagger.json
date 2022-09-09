@@ -854,10 +854,10 @@
 
     "/property": {
       "get": {
+        "tags": ["Admin", "Host", "User"],
         "description": "Returns a list of properties",
         "consumes": ["application/json"],
         "produces": ["application/json"],
-        "tags": ["Admin", "Host", "User"],
         "responses": {
           "200": {
             "description": "Success",

@@ -20,16 +20,14 @@
     - [:space_invader: Tech Stack](#space_invader-tech-stack)
     - [:dart: Features](#dart-features)
     - [:book: API Endpoints](#book-api-endpoints)
-      - [Base Url - `{API_URL}/api`](#base-url---api_urlapi)
-      - [Users](#users)
-      - [Posts](#posts)
-      - [Answers](#answers)
-      - [Comments](#comments)
-      - [Tags](#tags)
+      - [Base Url - `{API_URL}/api/v1`](#base-url---api_urlapiv1)
+      - [Authentication](#authentication)
+      - [Admin](#admin)
+      - [Customers](#customers)
+      - [Hosts](#hosts)
   - [:toolbox: Getting Started](#toolbox-getting-started)
     - [:bangbang: Prerequisites](#bangbang-prerequisites)
     - [:key: Environment Variables](#key-environment-variables)
-    - [:gear: Installation](#gear-installation)
     - [:running: Run Locally](#running-run-locally)
   - [:compass: Roadmap](#compass-roadmap)
   - [:wave: Contributing](#wave-contributing)
@@ -52,10 +50,15 @@
 <details>
   <summary>Client</summary>
   <ul>
-    <li><a href="https://www.typescriptlang.org/">Typescript</a></li>
+     <li><a href="https://www.typescriptlang.org/">Typescript</a></li>
     <li><a href="https://reactjs.org/">React.js</a></li>
-    <li><a href="https://reactjs.org/">Redux Toolkit</a></li>
-    <li><a href="https://tailwindcss.com/">Chakra UI</a></li>
+    <li><a href="https://redux-toolkit.js.org">Redux Toolkit</a></li>
+    <li><a href="https://github.com/rt2zz/redux-persist#readme">Redux Persist</a></li>
+    <li><a href="https://chakra-ui.com">Chakra UI</a></li>
+    <li><a href="https://axios-http.com">Axios</a></li>
+    <li><a href="https://formik.org/">Formik</a></li>
+    <li><a href="https://github.com/jquense/yup">Yup</a></li>
+ 
   </ul>
 </details>
 
@@ -63,6 +66,13 @@
   <summary>Server</summary>
   <ul>
     <li><a href="https://expressjs.com/">Express.js</a></li>
+    <li><a href="https://github.com/expressjs/cors#readme">CORS</a></li>
+    <li><a href="https://helmetjs.github.io">Helmet</a></li>
+    <li><a href="https://mongoosejs.com">Mongoose ORM</a></li>
+    <li><a href="https://nodemailer.com/">Node Mailer</a></li>
+    <li><a href="https://github.com/auth0/node-jsonwebtoken">JSON Webtoken</a></li>
+    <li><a href="https://github.com/getsentry/sentry-javascript">Sentry</a></li>
+    <li><a href="https://cloudinary.com/">Cloudinary</a></li>
     
   </ul>
 </details>
@@ -85,15 +95,15 @@
 
 ### :dart: Features
 
-- Feature 1
-- Feature 2
-- Feature 3
+- Property listing - by hosts and admin (on behalf of hosts)
+- Property booking - by customers
+- Approval and Decline of properties uploaded by hosts
 
 ### :book: API Endpoints
 
 API is currently hosted on **[room-finder-api.herokuapp.com](https://room-finder-api.herokuapp.com/docs/)**
 
-You can view and read the API endpoints samples [here](https://documenter.getpostman.com/view/10053385/UVC3kTiG#f02c9fce-5737-4cd6-9d8e-ad48233102c7). This is API documentation for the back-end.
+<!-- You can view and read the API endpoints samples [here](https://documenter.getpostman.com/view/10053385/UVC3kTiG#f02c9fce-5737-4cd6-9d8e-ad48233102c7). This is API documentation for the back-end.
 
 But, if you want use Postman to test the API in local machine, you need to follow the steps below:
 
@@ -101,43 +111,68 @@ But, if you want use Postman to test the API in local machine, you need to follo
 - Download the Postman collection file in folder "/data/postman_collection"
 - Import the collection file in Postman
 - **Important:** will be necessary to setup the enviroment with the "VARIABLE"=urlAPI and "INITIAL VALUE"=http://localhost:5000, for example.
-- **Remember**: keep the Postman collection updated with the latest API endpoints.
+- **Remember**: keep the Postman collection updated with the latest API endpoints. -->
 
-#### Base Url - `{API_URL}/api`
+#### Base Url - `{API_URL}/api/v1`
 
-#### Users
+#### Authentication
 
-- `GET /auth`
-- `POST /auth`
-- `POST /users/:id`
+- `POST /signup`
+- `POST /otp`
+- `POST /login`
+- `POST /logout`
+
+#### Admin
+
+- `GET /dashboard-reports`
+- `POST /users`
+- `PATCH /users/:user_id`
+- `DELETE /users/:user_id`
 - `GET /users`
-- `GET /users/:id`
+- `GET /bookings`
+- `GET /property`
+- `GET /property/:id`
+- `PATCH /property/:id`
+- `DELETE /property/:id`
+- `POST /property`
+- `POST /approve`
+- `GET /hosts`
+- `GET /hosts/:id`
+- `PATCH /hosts/:id`
+- `DELETE /hosts/:id`
+- `GET /room-types`
+- `POST /room-types`
+- `GET /room-types/:id`
+- `PATCH /room-types/:id`
+- `DELETE /room-types/:id`
+- `GET /amenities`
+- `GET /amenities/:id`
+- `PATCH /amenities/:id`
+- `DELETE /amenities/:id`
+- `POST /amenities`
 
-#### Posts
+#### Customers
 
-- `GET /posts`
-- `GET /posts/top`
-- `GET /posts/tag/:tagname`
-- `GET /posts/:id`
-- `POST /posts/`
-- `DELETE /posts/:id`
+- `GET /customer-bookings`
+- `GET /customer-bookings/:property_id`
+- `PATCH /customer-bookings/:property_id`
+- `GET /property`
+- `GET /property/:id`
+- `GET /room-types`
+- `GET /room-types/:id`
+- `GET /amenities`
+- `GET /amenities/:id`
 
-#### Answers
+#### Hosts
 
-- `GET /posts/answers/:id`
+- `GET /property`
 - `POST /posts/answers/:id`
 - `DELETE /posts/answers/:id`
-
-#### Comments
-
-- `GET /posts/comments/:id`
-- `POST /posts/comments/:id`
-- `DELETE /posts/comments/:id`
-
-#### Tags
-
-- `GET /tags`
-- `GET /tags/:tag_name`
+- `GET /property/:id`
+- `GET /room-types`
+- `GET /room-types/:id`
+- `GET /amenities`
+- `GET /amenities/:id`
 
 <!-- Getting Started -->
 
@@ -159,20 +194,39 @@ This project uses Yarn as package manager
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`API_KEY`
+`CLOUDINARY_API_SECRET`
 
-`ANOTHER_API_KEY`
+`CLOUDINARY_API_KEY`
 
-<!-- Installation -->
+`CLOUDINARY_CLOUD_NAME`
 
-### :gear: Installation
+`MAILGUN_DOMAIN`
 
-Install my-project with npm
+`MAILGUN_API_KEY`
 
-```bash
-  yarn install my-project
-  cd my-project
-```
+`DB_CLUSTER`
+
+`DB_NAME`
+
+`DB_PASSWORD`
+
+`DB_USER`
+
+`AUTH_PASSWORD`
+
+`AUTH_EMAIL`
+
+`JWT_EXPIRY_TIME`
+
+`JWT_SECRET`
+
+`DSN`
+
+`PORT`
+
+`HOST`
+
+`NODE_ENV`
 
 <!-- Run Locally -->
 
@@ -193,7 +247,7 @@ Go to the project directory
 Install dependencies
 
 ```bash
-  yarn install
+  yarn
 ```
 
 Start the server
@@ -206,8 +260,8 @@ Start the server
 
 ## :compass: Roadmap
 
-- [x] Todo 1
-- [ ] Todo 2
+- [ ] Verify hosts through ID Verification
+- [ ] Rate properties - by customers
 
 <!-- Contributing -->
 
