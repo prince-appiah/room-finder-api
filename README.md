@@ -166,8 +166,6 @@ But, if you want use Postman to test the API in local machine, you need to follo
 #### Hosts
 
 - `GET /property`
-- `POST /posts/answers/:id`
-- `DELETE /posts/answers/:id`
 - `GET /property/:id`
 - `GET /room-types`
 - `GET /room-types/:id`
