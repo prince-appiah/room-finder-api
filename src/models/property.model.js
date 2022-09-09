@@ -78,8 +78,6 @@ propertySchema.post("validate", async function (doc, next) {
       { $push: { properties: doc._id } }
     );
 
-    // TODO: generate reference number and assign to field when a property is created
-
     next();
   } catch (e) {
     next(e);

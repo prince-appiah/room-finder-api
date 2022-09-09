@@ -18,6 +18,9 @@ module.exports = (app) => {
   let propertyRoutes = require("./property.routes")(app);
   router.use(propertyRoutes);
 
+  let bookingRoutes = require("./bookings.routes")(app);
+  router.use(bookingRoutes);
+
   let roomTypeRoutes = require("./room-type.routes")(app);
   router.use(roomTypeRoutes);
 
