@@ -60,6 +60,51 @@ class BookingRepo {
       return error;
     }
   }
+
+  static async checkBookedProperty({ user_id, property_id }) {
+    try {
+      // search the customer with user id
+      const customer = await Customer.findOne({ user_id });
+      const response = await BookingModel.findOne({
+        status: "pending",
+        $and: [
+          { customer: { $eq: customer._id } },
+          { property: { $eq: property_id } },
+        ],
+      }).populate({
+        path: "property",
+        populate: { path: "images owner" },
+      });
+
+      return response;
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async cancelBooking({ user_id, property_id }) {
+    try {
+      // search the customer with user id
+      const customer = await Customer.findOne({ user_id });
+      const response = await BookingModel.findOneAndUpdate(
+        {
+          $and: [
+            { customer: { $eq: customer._id } },
+            { property: { $eq: property_id } },
+          ],
+        },
+        { status: "cancelled" }
+      );
+
+      return response;
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
 }
 
 module.exports = BookingRepo;

@@ -22,6 +22,21 @@ module.exports = (app) => {
     BookingController.getCustomerBookings
   );
 
+  // check if a property is already booked
+  router.get(
+    "/customer-bookings/:property_id",
+    requireToken,
+    allowRoles([roles.USER]),
+    BookingController.checkBookedProperty
+  );
+
+  router.patch(
+    "/customer-bookings/:property_id",
+    requireToken,
+    allowRoles([roles.USER]),
+    BookingController.cancelBooking
+  );
+
   router.post(
     "/bookings",
     requireToken,
