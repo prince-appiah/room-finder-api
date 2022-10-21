@@ -94,6 +94,36 @@ class UserRepo {
     }
   }
 
+  static async getUserInfo({ user_id }) {
+    try {
+      let profile = null;
+      const user = await User.findOne({ _id: user_id }).select("-__v");
+
+      // return profile based on user type
+      if (user && user.userType === "customer") {
+        profile = await Customer.findOne({ user_id })
+          .select("-__v")
+          .populate("bookings", "-__v")
+          .populate("user_id", "-__v");
+      }
+
+      if (user && user.userType === "host") {
+        profile = await Host.findOne({ user_id })
+          .select("-__v")
+          .populate({
+            path: "properties",
+            populate: { path: "images" },
+          })
+          .populate("user_id", "-__v");
+      }
+
+      return user && profile ? { role: user.userType, profile } : null;
+    } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
   static async findUser(email) {
     try {
       const user = await User.findOne({ email });
@@ -137,7 +167,7 @@ class UserRepo {
       if (!existingUser) {
         return { msg: "User not found", status: 404 };
       }
-
+      // todo delete associated user profile
       const deletedUser = await existingUser.remove();
       console.log("🚀 ~ deletedUser", deletedUser);
 

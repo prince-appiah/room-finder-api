@@ -8,6 +8,11 @@ const bookingSchema = new Schema(
       ref: "Customer",
       required: [true, "Booking must belong to a customer"],
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "Host",
+      required: [true, "Booking must include a listing owner"],
+    },
     property: {
       type: Schema.Types.ObjectId,
       ref: "Property",
