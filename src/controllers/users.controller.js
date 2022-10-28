@@ -129,6 +129,21 @@ class UsersController {
       return res.status(500).json(error);
     }
   }
+
+  static async getUserInfo(req, res) {
+    try {
+      const { user_id } = req.query;
+      const result = await UserRepo.getUserInfo({ user_id });
+
+      if (result !== null) {
+        return res.status(200).json(result);
+      }
+      return res.status(400).json({ msg: "Could not find user profile" });
+    } catch (error) {
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
 }
 
 module.exports = UsersController;

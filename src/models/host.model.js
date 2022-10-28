@@ -17,6 +17,18 @@ const hostSchema = new Schema(
       type: String,
       default: null,
     },
+    companyName: {
+      type: String,
+      default: null,
+    },
+    about: {
+      type: String,
+      default: null,
+    },
+    website: {
+      type: String,
+      default: null,
+    },
     profilePicture: {
       type: String,
       trim: true,

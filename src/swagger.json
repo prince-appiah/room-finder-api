@@ -1045,7 +1045,7 @@
 
     "/approve": {
       "patch": {
-        "description": "Update a property",
+        "description": "Approve listing/property",
         "tags": ["Admin"],
         "security": [{ "BearerAuth": [] }],
         "consumes": ["application/json"],
@@ -1281,6 +1281,83 @@
           },
           "404": {
             "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hosts-profile": {
+      "patch": {
+        "description": "Update host profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["Host"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Host ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Host"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "$ref": "#/definitions/Host"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "msg": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
             "schema": {
               "type": "object",
               "properties": {

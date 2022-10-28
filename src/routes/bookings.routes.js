@@ -18,8 +18,15 @@ module.exports = (app) => {
   router.get(
     "/customer-bookings",
     requireToken,
-    allowRoles([roles.USER]),
+    allowRoles([roles.USER, roles.ADMIN]),
     BookingController.getCustomerBookings
+  );
+
+  router.get(
+    "/host-bookings",
+    requireToken,
+    allowRoles([roles.HOST]),
+    BookingController.getHostBookings
   );
 
   // check if a property is already booked

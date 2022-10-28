@@ -1,10 +1,32 @@
 const express = require("express");
+const { roles } = require("../config/constants");
+const requireToken = require("../middlewares/requireToken");
+const allowRoles = require("../middlewares/allowRoles");
 const HostsController = require("../controllers/hosts.controller");
 
 module.exports = (app) => {
   let router = express.Router();
 
-  router.get("/hosts", HostsController.getAllHosts);
+  router.get(
+    "/host-dashboard-reports",
+    requireToken,
+    allowRoles([roles.HOST]),
+    HostsController.getDashboardReports
+  );
+
+  router.get(
+    "/hosts",
+    requireToken,
+    allowRoles([roles.ADMIN]),
+    HostsController.getAllHosts
+  );
+
+  router.patch(
+    "/hosts-profile",
+    requireToken,
+    allowRoles([roles.HOST]),
+    HostsController.updateHostProfile
+  );
 
   router.post("/hosts", HostsController.createHost);
 

@@ -12,6 +12,49 @@ class HostController {
       return res.status(500).json(error);
     }
   }
+  static async updateHostProfile(req, res) {
+    try {
+      const user_id = req.user._id;
+      const { companyName, about, website, phone, firstname, lastname } =
+        req.body;
+      const payload = {
+        companyName,
+        about,
+        website,
+        phone,
+        firstname,
+        lastname,
+      };
+
+      const result = await HostsRepo.updateHostProfile({ user_id, payload });
+
+      if (result.status === 404) {
+        return res.status(404).json(result);
+      }
+
+      if (result.status === 201) {
+        return res.status(200).json(result);
+      }
+
+      return res.status(400).json(result);
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
+
+  static async getDashboardReports(req, res) {
+    try {
+      const user_id = req.user._id;
+      const result = await HostsRepo.getDashboardReports({ user_id });
+
+      return res.status(200).json(result);
+    } catch (error) {
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
 
   static async createHost(req, res) {
     try {
