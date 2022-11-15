@@ -15,8 +15,7 @@ class HostController {
   static async updateHostProfile(req, res) {
     try {
       const user_id = req.user._id;
-      const { companyName, about, website, phone, firstname, lastname } =
-        req.body;
+      const { companyName, about, website, phone, firstname, lastname, location } = req.body;
       const payload = {
         companyName,
         about,
@@ -24,6 +23,7 @@ class HostController {
         phone,
         firstname,
         lastname,
+        location,
       };
 
       const result = await HostsRepo.updateHostProfile({ user_id, payload });
