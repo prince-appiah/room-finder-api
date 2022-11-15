@@ -24,9 +24,7 @@ class BookingRepo {
       // find customer with this user id and the customer id for creating the booking
       console.log("🚀 ~  property.owner", property);
       const cus = await Customer.findOne({ user_id });
-      const listing = await propertyModel
-        .find({ _id: property })
-        .populate("owner");
+      const listing = await propertyModel.find({ _id: property }).populate("owner");
       console.log("🚀 ~ listing", listing);
       const response = await BookingModel.create({
         property,
@@ -72,10 +70,33 @@ class BookingRepo {
 
   static async getHostBookings({ user_id }) {
     try {
-      // search the customer with user id
+      // search the host with user id
       const host = await Host.findOne({ user_id });
       const response = await BookingModel.find({
         owner: { $eq: host._id },
+      })
+        .populate("customer", "-__v")
+        .populate({
+          path: "property",
+          populate: { path: "images" },
+        });
+      // .sort({ createdAt: -1 });
+
+      return response;
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async getHostBookingDetails({ user_id, booking_id }) {
+    try {
+      // search the host with user id
+      const host = await Host.findOne({ user_id });
+      const response = await BookingModel.findOne({
+        owner: { $eq: host._id },
+        $and: [{ _id: { $eq: booking_id } }],
       })
         .populate("customer", "-__v")
         // .populate('property','-__v')
@@ -99,10 +120,7 @@ class BookingRepo {
       const customer = await Customer.findOne({ user_id });
       const response = await BookingModel.findOne({
         status: "pending",
-        $and: [
-          { customer: { $eq: customer._id } },
-          { property: { $eq: property_id } },
-        ],
+        $and: [{ customer: { $eq: customer._id } }, { property: { $eq: property_id } }],
       }).populate({
         path: "property",
         populate: { path: "images owner" },
@@ -122,12 +140,9 @@ class BookingRepo {
       const customer = await Customer.findOne({ user_id });
       const response = await BookingModel.findOneAndUpdate(
         {
-          $and: [
-            { customer: { $eq: customer._id } },
-            { property: { $eq: property_id } },
-          ],
+          $and: [{ customer: { $eq: customer._id } }, { property: { $eq: property_id } }],
         },
-        { status: "cancelled" }
+        { status: "cancelled" },
       );
 
       return response;

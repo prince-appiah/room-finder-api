@@ -95,6 +95,19 @@ class RoomController {
     }
   }
 
+  static async getHostProperties(req, res) {
+    try {
+      console.log("getting hosts properties");
+      const user_id = req.user._id;
+      const result = await PropertyRepo.getHostProperties({ user_id });
+
+      return res.status(200).json(result);
+    } catch (error) {
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
+
   static async approveListing(req, res) {
     try {
       const { property_id } = req.query;
@@ -129,17 +142,8 @@ class RoomController {
       const { id } = req.params;
 
       // TODO: validate the data
-      const {
-        name,
-        roomType,
-        price,
-        description,
-        location,
-        stayPeriod,
-        amenities,
-        numOfBathrooms,
-        numOfBedrooms,
-      } = req.body;
+      const { name, roomType, price, description, location, stayPeriod, amenities, numOfBathrooms, numOfBedrooms } =
+        req.body;
 
       if (!id) {
         return res.status(400).json({ msg: "Property ID is required" });

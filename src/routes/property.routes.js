@@ -13,33 +13,20 @@ module.exports = (app) => {
     requireToken,
     allowRoles([roles.ADMIN]),
     upload.array("images"),
-    PropertyController.addProperty
+    PropertyController.addProperty,
   );
 
   router.get("/property", PropertyController.getAll);
 
   router.get("/property/:id", PropertyController.findProperty);
 
-  router.patch(
-    "/approve",
-    requireToken,
-    allowRoles([roles.ADMIN]),
-    PropertyController.approveListing
-  );
+  router.get("/host-properties", requireToken, allowRoles([roles.HOST]), PropertyController.getHostProperties);
 
-  router.patch(
-    "/property/:id",
-    requireToken,
-    allowRoles([roles.ADMIN]),
-    PropertyController.updateProperty
-  );
+  router.patch("/approve", requireToken, allowRoles([roles.ADMIN]), PropertyController.approveListing);
 
-  router.delete(
-    "/property/:id",
-    requireToken,
-    allowRoles([roles.ADMIN]),
-    PropertyController.deleteProperty
-  );
+  router.patch("/property/:id", requireToken, allowRoles([roles.ADMIN]), PropertyController.updateProperty);
+
+  router.delete("/property/:id", requireToken, allowRoles([roles.ADMIN]), PropertyController.deleteProperty);
 
   return router;
 };

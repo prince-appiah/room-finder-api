@@ -28,13 +28,6 @@ class HostsRepo {
         userType,
       });
 
-      // const prof = await ProfileRepo.createProfile({
-      //   user_id: user.data._id,
-      //   email: user.data.email,
-      //   userType,
-      // });
-      // console.log("🚀 ~ prof", prof);
-
       if (user.status === 201) {
         await MailConfig.sendWelcomeMessageToUser(user.data);
         await MailConfig.sendOtpToUser(user.otp, user.data);
@@ -85,11 +78,7 @@ class HostsRepo {
         return { msg: "Host profile not found", status: 404, data: null };
       }
 
-      const result = await Host.findOneAndUpdate(
-        { user_id },
-        { ...payload },
-        { new: true }
-      );
+      const result = await Host.findOneAndUpdate({ user_id }, { ...payload }, { new: true });
 
       if (result) {
         return { msg: "Host profile updated", status: 201, data: result };
@@ -160,7 +149,6 @@ class HostsRepo {
       const updatedHost = await Host.findOneAndUpdate({ _id: id }, payload, {
         new: true,
       });
-      // const updatedHost=await Host.findByIdAndUpdate(id, update, options)
 
       if (updatedHost) {
         return {
