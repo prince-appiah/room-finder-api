@@ -15,9 +15,36 @@ class BookingController {
   static async getCustomerBookings(req, res) {
     try {
       const user_id = req.user._id;
-      console.log("🚀 ~ user_id", user_id);
 
       const response = await BookingRepo.getCustomerBookings({ user_id });
+      return res.status(200).json(response);
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
+
+  static async getHostBookings(req, res) {
+    try {
+      const user_id = req.user._id;
+      console.log("🚀 ~ user_id", user_id);
+
+      const response = await BookingRepo.getHostBookings({ user_id });
+      return res.status(200).json(response);
+    } catch (error) {
+      console.log("🚀 ~ error", error);
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
+
+  static async getHostBookingDetails(req, res) {
+    try {
+      const user_id = req.user._id;
+      const { booking_id } = req.params;
+
+      const response = await BookingRepo.getHostBookingDetails({ user_id, booking_id });
       return res.status(200).json(response);
     } catch (error) {
       console.log("🚀 ~ error", error);

@@ -61,12 +61,8 @@ class UserRepo {
   static async getAdminDashboardReport() {
     try {
       const properties = await Property.find().select("-__v");
-      const approvedListings = properties.filter(
-        (item) => item.isApproved
-      ).length;
-      const pendingApprovals = properties.filter(
-        (item) => !item.isApproved
-      ).length;
+      const approvedListings = properties.filter((item) => item.isApproved).length;
+      const pendingApprovals = properties.filter((item) => !item.isApproved).length;
 
       const users = await User.count();
 
@@ -88,6 +84,36 @@ class UserRepo {
       const users = await User.find().select("-__v");
 
       return users;
+    } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
+  static async getUserInfo({ user_id }) {
+    try {
+      let profile = null;
+      const user = await User.findOne({ _id: user_id }).select("-__v");
+
+      // return profile based on user type
+      if (user && user.userType === "customer") {
+        profile = await Customer.findOne({ user_id })
+          .select("-__v")
+          .populate("bookings", "-__v")
+          .populate("user_id", "-__v");
+      }
+
+      if (user && user.userType === "host") {
+        profile = await Host.findOne({ user_id })
+          .select("-__v")
+          .populate({
+            path: "properties",
+            populate: { path: "images" },
+          })
+          .populate("user_id", "-__v");
+      }
+
+      return user && profile ? { role: user.userType, profile } : null;
     } catch (error) {
       Sentry.captureException(error);
       return error;
@@ -136,6 +162,15 @@ class UserRepo {
 
       if (!existingUser) {
         return { msg: "User not found", status: 404 };
+      }
+      // todo delete associated user profile using the existing user id
+
+      if (existingUser.userType === "customer") {
+        await Customer.findOneAndDelete({ user_id: existingUser.id });
+      }
+
+      if (existingUser.userType === "host") {
+        await Host.findOneAndDelete({ user_id: existingUser.id });
       }
 
       const deletedUser = await existingUser.remove();

@@ -17,11 +17,26 @@ const hostSchema = new Schema(
       type: String,
       default: null,
     },
+    companyName: {
+      type: String,
+      default: null,
+    },
+    location: {
+      type: String,
+      default: null,
+    },
+    about: {
+      type: String,
+      default: null,
+    },
+    website: {
+      type: String,
+      default: null,
+    },
     profilePicture: {
       type: String,
       trim: true,
-      default:
-        "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
+      default: "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
     },
     isVerified: {
       type: Boolean,
@@ -43,7 +58,7 @@ const hostSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Mongoose hooks here - if any
