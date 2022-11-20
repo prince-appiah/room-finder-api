@@ -1,5 +1,6 @@
 const Sentry = require("@sentry/node");
 const MailConfig = require("../config/mail.config");
+const User = require("../models/user.model");
 const AuthRepo = require("../repositories/auth.repo");
 const OtpRepo = require("../repositories/otp.repo");
 const UserRepo = require("../repositories/user.repo");
@@ -93,10 +94,12 @@ class AuthController {
       }
 
       const result = await OtpRepo.createOtp(email);
+      console.log("🚀 ~ result", result);
+
+      const user = await User.findOne({ email });
 
       if (result.status === 200) {
-        // TODO: Send otp to user via email
-        await MailConfig.sendOtpToUser(result.data.code, userExists);
+        await MailConfig.sendOtpToUser(result.data.code, user);
         return res.status(200).json(result);
       }
 
