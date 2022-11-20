@@ -13,8 +13,9 @@ const domain = mailGun.DOMAIN;
 
 let transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
+  service: "gmail",
   port: 465,
-  secure: true,
+  secure: false,
   auth: {
     // TODO replace user with company email
     user: mail.EMAIL,
