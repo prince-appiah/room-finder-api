@@ -31,7 +31,6 @@ class OtpRepo {
           ...response,
           msg: "New OTP generated",
           status: 200,
-
           data: newOtp,
         };
       }
@@ -46,11 +45,7 @@ class OtpRepo {
       }
 
       // update existing email's otp and expiry date
-      const updatedOtp = await Otp.findOneAndUpdate(
-        { email },
-        { code, expiryDate },
-        { new: true }
-      ).select("-__v");
+      const updatedOtp = await Otp.findOneAndUpdate({ email }, { code, expiryDate }, { new: true }).select("-__v");
 
       return { ...response, msg: "OTP updated", status: 200, data: updatedOtp };
     } catch (error) {
@@ -85,16 +80,13 @@ class OtpRepo {
               msg: "OTP Verified",
               status: "valid",
             };
-            break;
 
           case isExpired:
             // await Otp.findOneAndDelete({ email });
             return { ...response, msg: "OTP Expired", status: "invalid" };
-            break;
 
           case isNotValid:
             return { ...response, msg: "OTP Invalid", status: "invalid" };
-            break;
 
           default:
             return {
@@ -102,7 +94,6 @@ class OtpRepo {
               msg: "OTP Verification failed",
               status: "invalid",
             };
-            break;
         }
       }
       return { ...response, msg: "OTP does not exist", status: "invalid" };

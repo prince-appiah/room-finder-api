@@ -1,4 +1,5 @@
 const Sentry = require("@sentry/node");
+const MailConfig = require("../config/mail.config");
 const AuthRepo = require("../repositories/auth.repo");
 const OtpRepo = require("../repositories/otp.repo");
 const UserRepo = require("../repositories/user.repo");
@@ -18,9 +19,7 @@ class AuthController {
       }
 
       if (!["customer", "host", "admin"].includes(userType)) {
-        return res
-          .status(400)
-          .json({ msg: "User type must be a 'customer', 'host' or 'admin'" });
+        return res.status(400).json({ msg: "User type must be a 'customer', 'host' or 'admin'" });
       }
 
       const result = await AuthRepo.signup({
@@ -97,6 +96,7 @@ class AuthController {
 
       if (result.status === 200) {
         // TODO: Send otp to user via email
+        await MailConfig.sendOtpToUser(result.data.code, userExists);
         return res.status(200).json(result);
       }
 
