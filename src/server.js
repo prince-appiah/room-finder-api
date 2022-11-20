@@ -1,5 +1,7 @@
 require("dotenv").config();
+
 const http = require("http");
+const colors = require("colors");
 const app = require("./app");
 const { connectDatabase } = require("./config/mongoose");
 
