@@ -4,7 +4,7 @@
 
 ### API Hosted On
 
-- **[room-finder-api.herokuapp.com](https://room-finder-api.herokuapp.com/docs/) (Primary)**
+- **[shelter-api.cyclic.app](https://shelter-api.cyclic.app/docs/) (Primary)**
 
 ### Frontend Hosted On
 
@@ -101,7 +101,7 @@
 
 ### :book: API Endpoints
 
-API is currently hosted on **[room-finder-api.herokuapp.com](https://room-finder-api.herokuapp.com/docs/)**
+API is currently hosted on **[shelter-api.cyclic.app](https://shelter-api.cyclic.app/docs/)**
 
 <!-- You can view and read the API endpoints samples [here](https://documenter.getpostman.com/view/10053385/UVC3kTiG#f02c9fce-5737-4cd6-9d8e-ad48233102c7). This is API documentation for the back-end.
 

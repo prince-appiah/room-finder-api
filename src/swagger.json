@@ -12,7 +12,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "room-finder-api.herokuapp.com",
+  "host": "shelter-api.cyclic.app",
   "basePath": "/api/v1",
   "tags": [
     { "name": "Admin", "description": "Endpoints for admins" },
@@ -199,15 +199,7 @@
           "readOnly": true
         }
       },
-      "required": [
-        "name",
-        "roomType",
-        "price",
-        "description",
-        "location",
-        "stayPeriod",
-        "amenities"
-      ]
+      "required": ["name", "roomType", "price", "description", "location", "stayPeriod", "amenities"]
     },
     "Customer": {
       "type": "object",
@@ -882,16 +874,7 @@
             "in": "body",
             "schema": {
               "$ref": "#/definitions/Property",
-              "required": [
-                "owner",
-                "name",
-                "roomType",
-                "price",
-                "description",
-                "location",
-                "stayPeriod",
-                "images"
-              ]
+              "required": ["owner", "name", "roomType", "price", "description", "location", "stayPeriod", "images"]
             }
           }
         ],
