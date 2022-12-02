@@ -36,6 +36,10 @@ const propertySchema = new Schema(
       type: Number,
       required: true,
     },
+    color: {
+      type: String,
+      required: false,
+    },
     description: {
       type: String,
       required: [true, "Description is required"],
@@ -67,16 +71,13 @@ const propertySchema = new Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Mongoose hooks here - if any
 propertySchema.post("validate", async function (doc, next) {
   try {
-    await Host.findOneAndUpdate(
-      { _id: doc.owner },
-      { $push: { properties: doc._id } }
-    );
+    await Host.findOneAndUpdate({ _id: doc.owner }, { $push: { properties: doc._id } });
 
     next();
   } catch (e) {
@@ -87,11 +88,7 @@ propertySchema.post("validate", async function (doc, next) {
 // * this hook removes the property id from the host's properties array
 propertySchema.post("findOneAndRemove", async function (doc, next) {
   try {
-    await Host.findOneAndUpdate(
-      { _id: doc.owner },
-      { $pull: { properties: doc._id } },
-      { new: true }
-    );
+    await Host.findOneAndUpdate({ _id: doc.owner }, { $pull: { properties: doc._id } }, { new: true });
 
     next();
   } catch (error) {

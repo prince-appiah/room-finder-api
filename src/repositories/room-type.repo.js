@@ -49,11 +49,7 @@ class RoomTypeRepo {
         return null;
       }
 
-      const result = await RoomType.findOneAndUpdate(
-        { _id: id },
-        { name, icon },
-        { new: true }
-      );
+      const result = await RoomType.findOneAndUpdate({ _id: id }, { name, icon }, { new: true });
 
       return result;
     } catch (error) {
@@ -65,10 +61,20 @@ class RoomTypeRepo {
 
   static async removeRoomType({ id }) {
     try {
+      let response = { msg: "", status: null, data: null };
+
+      const existingType = await RoomType.findOne({ _id: id });
+      if (!existingType) {
+        return { ...response, msg: "Property type not found", status: 404 };
+      }
       //
       const result = await RoomType.findOneAndRemove({ _id: id });
 
-      return result;
+      if (result) {
+        return { ...response, msg: "Property type deleted", status: 200, deleted_property_type_id: id };
+      }
+
+      return { ...response, msg: "Could not delete property type", status: 400 };
     } catch (error) {
       console.log("🚀 ~ error", error);
       Sentry.captureException(error);
