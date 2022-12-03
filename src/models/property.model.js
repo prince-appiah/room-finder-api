@@ -36,6 +36,10 @@ const propertySchema = new Schema(
       type: Number,
       required: true,
     },
+    interestedParties: {
+      type: Number,
+      default: 0,
+    },
     color: {
       type: String,
       required: false,

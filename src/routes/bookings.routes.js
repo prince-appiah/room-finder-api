@@ -34,12 +34,7 @@ module.exports = (app) => {
     BookingController.checkBookedProperty,
   );
 
-  router.patch(
-    "/customer-bookings/:property_id",
-    requireToken,
-    allowRoles([roles.USER]),
-    BookingController.cancelBooking,
-  );
+  router.patch("/booking-property/cancel", requireToken, allowRoles([roles.USER]), BookingController.cancelBooking);
 
   router.post("/booking-property", requireToken, allowRoles([roles.USER]), BookingController.addBooking);
 

@@ -21,11 +21,9 @@ class BookingRepo {
 
   static async createBooking({ property_id, user_id }) {
     try {
-      // find customer with this user id and the customer id for creating the booking
-      console.log("🚀 ~  property.owner", property_id);
       const cus = await Customer.findOne({ user_id });
       const listing = await propertyModel.find({ _id: property_id }).populate("owner");
-      console.log("🚀 ~ listing", listing);
+
       const response = await BookingModel.create({
         property: property_id,
         customer: cus._id,
@@ -38,6 +36,11 @@ class BookingRepo {
         path: "property",
         populate: { path: "images owner" },
       });
+
+      if (createdBooking) {
+        // increase the interestedParties field in the property model by 1
+        await propertyModel.findOneAndUpdate({ _id: property_id }, { $inc: { interestedParties: 1 } }).exec();
+      }
 
       return createdBooking;
     } catch (error) {
@@ -144,6 +147,10 @@ class BookingRepo {
         },
         { status: "cancelled" },
       );
+
+      if (response) {
+        await propertyModel.findOneAndUpdate({ _id: property_id }, { $inc: { interestedParties: -1 } }).exec();
+      }
 
       return response;
     } catch (error) {
