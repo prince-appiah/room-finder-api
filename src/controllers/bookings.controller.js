@@ -75,7 +75,7 @@ class BookingController {
   static async cancelBooking(req, res) {
     try {
       const user_id = req.user._id;
-      const { property_id } = req.params;
+      const { property_id } = req.body;
 
       if (!property_id) {
         return res.status(400).json({ msg: "Property ID is required" });
