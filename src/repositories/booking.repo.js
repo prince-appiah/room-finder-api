@@ -19,15 +19,15 @@ class BookingRepo {
     }
   }
 
-  static async createBooking({ property, user_id }) {
+  static async createBooking({ property_id, user_id }) {
     try {
       // find customer with this user id and the customer id for creating the booking
-      console.log("🚀 ~  property.owner", property);
+      console.log("🚀 ~  property.owner", property_id);
       const cus = await Customer.findOne({ user_id });
-      const listing = await propertyModel.find({ _id: property }).populate("owner");
+      const listing = await propertyModel.find({ _id: property_id }).populate("owner");
       console.log("🚀 ~ listing", listing);
       const response = await BookingModel.create({
-        property,
+        property: property_id,
         customer: cus._id,
         owner: listing[0].owner,
       });

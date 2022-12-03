@@ -96,17 +96,16 @@ class BookingController {
   }
 
   static async addBooking(req, res) {
-    const { property } = req.query; // this should be the property reference number
+    const { property_id } = req.body; // this should be the property reference number
     const user_id = req.user._id;
-    console.log("🚀 ~ user_id", user_id);
 
-    if (!property) {
+    if (!property_id) {
       return res.status(400).json({ msg: "Property ID is required" });
     }
 
     try {
       const response = await BookingRepo.createBooking({
-        property,
+        property_id,
         user_id,
       });
 

@@ -41,7 +41,7 @@ module.exports = (app) => {
     BookingController.cancelBooking,
   );
 
-  router.post("/bookings", requireToken, allowRoles([roles.USER]), BookingController.addBooking);
+  router.post("/booking-property", requireToken, allowRoles([roles.USER]), BookingController.addBooking);
 
   router.get("/bookings/:id", HostsController.getHost);
 
