@@ -40,7 +40,7 @@ class MailConfig {
   // TODO replace "to" with real user email
   static async sendOtpToUser(otp, user) {
     let msg = {
-      from: "Shelter Notifications <admin@shelter.com>",
+      from: "Shelter Notifications <admin@shelter-three.vercel.app>",
       to: `${user.email}`,
       subject: "Shelter Login Code",
       html: `
@@ -64,7 +64,7 @@ class MailConfig {
 
   static async sendOtpToUserAfterSignup(otp, user) {
     let msg = {
-      from: "Shelter Notifications <admin@shelter.com>",
+      from: "Shelter Notifications <admin@shelter-three.vercel.app>",
       to: `${user.email}`,
       subject: "Shelter Login Code",
       html: `
@@ -90,7 +90,7 @@ class MailConfig {
 
   static async sendWelcomeMessageToUser(user) {
     let msg = {
-      from: "Shelter Notifications <admin@shelter.com>",
+      from: "Shelter Notifications <admin@shelter-three.vercel.app>",
       to: `${user.email}`,
       subject: "Yayy! Welcome to Shelter 🎉",
       html: `
