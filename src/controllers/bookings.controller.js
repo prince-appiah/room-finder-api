@@ -53,6 +53,19 @@ class BookingController {
     }
   }
 
+  static async getInterestedParties(req, res) {
+    try {
+      const user_id = req.user._id;
+      const { property_id } = req.params;
+
+      const response = await BookingRepo.getInterestedParties({ user_id, property_id });
+      return res.status(200).json(response);
+    } catch (error) {
+      Sentry.captureException(error);
+      return res.status(500).json(error);
+    }
+  }
+
   static async checkBookedProperty(req, res) {
     try {
       const user_id = req.user._id;

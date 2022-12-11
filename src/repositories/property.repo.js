@@ -25,6 +25,7 @@ class RoomRepo {
     location,
     amenities,
     stayPeriod,
+    color,
     pictures,
     referenceNo,
     numOfBathrooms,
@@ -47,6 +48,7 @@ class RoomRepo {
         description,
         location,
         stayPeriod,
+        color,
         images,
         amenities,
         referenceNo,
@@ -96,7 +98,7 @@ class RoomRepo {
         owner: { $eq: host._id },
       })
         .select("-__v")
-        // .populate("owner", "-__v")
+        .populate("interestedParties", "-__v")
         .populate("roomType", "-__v")
         .populate("images", "-__v")
         .populate("amenities", "-__v");
@@ -140,6 +142,7 @@ class RoomRepo {
     stayPeriod,
     amenities,
     numOfBathrooms,
+    color,
     numOfBedrooms,
   }) {
     try {
@@ -163,6 +166,7 @@ class RoomRepo {
           description,
           location,
           stayPeriod,
+          color,
           amenities,
           numOfBathrooms,
           numOfBedrooms,

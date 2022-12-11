@@ -6,16 +6,19 @@ const bookingSchema = new Schema(
     customer: {
       type: Schema.Types.ObjectId,
       ref: "Customer",
+      index: true,
       required: [true, "Booking must belong to a customer"],
     },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "Host",
+      index: true,
       required: [true, "Booking must include a listing owner"],
     },
     property: {
       type: Schema.Types.ObjectId,
       ref: "Property",
+      index: true,
       required: [true, "Booking must have a property"],
     },
     status: {
@@ -24,7 +27,7 @@ const bookingSchema = new Schema(
       default: "pending",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Mongoose hooks here - if any
@@ -36,7 +39,7 @@ bookingSchema.post("validate", async function (doc, next) {
     const updatedCustomer = await Customer.findOneAndUpdate(
       { _id: doc.customer },
       { $push: { bookings: doc._id } },
-      { new: true }
+      { new: true },
     );
     console.log("🚀 ~ updatedCustomer", updatedCustomer);
     next();

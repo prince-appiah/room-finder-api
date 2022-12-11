@@ -16,6 +16,7 @@ const propertySchema = new Schema(
     referenceNo: {
       type: String,
       unique: true,
+      index: true,
       required: [true, "Reference number is required"],
     },
     roomType: {
@@ -36,10 +37,13 @@ const propertySchema = new Schema(
       type: Number,
       required: true,
     },
-    interestedParties: {
-      type: Number,
-      default: 0,
-    },
+    interestedParties: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Customer",
+        required: true,
+      },
+    ],
     color: {
       type: String,
       required: false,
