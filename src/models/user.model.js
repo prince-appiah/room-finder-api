@@ -16,6 +16,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Email is required"],
       unique: true,
+      index: true,
       trim: true,
     },
     phone: {
@@ -37,11 +38,10 @@ const userSchema = new Schema(
     profilePicture: {
       type: String,
       trim: true,
-      default:
-        "https://res.cloudinary.com/ddnozuc0s/image/upload/v1644180173/sample.jpg",
+      default: "https://res.cloudinary.com/ddnozuc0s/image/upload/v1644180173/sample.jpg",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Mongoose hooks here - if any

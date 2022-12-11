@@ -21,13 +21,13 @@ class BookingRepo {
 
   static async createBooking({ property_id, user_id }) {
     try {
-      const cus = await Customer.findOne({ user_id });
-      const listing = await propertyModel.find({ _id: property_id }).populate("owner");
+      const existingCustomer = await Customer.findOne({ user_id });
+      const listing = await propertyModel.findOne({ _id: property_id }).populate("owner");
 
       const response = await BookingModel.create({
         property: property_id,
-        customer: cus._id,
-        owner: listing[0].owner,
+        customer: existingCustomer._id,
+        owner: listing.owner,
       });
 
       const createdBooking = BookingModel.findOne({
@@ -39,7 +39,11 @@ class BookingRepo {
 
       if (createdBooking) {
         // increase the interestedParties field in the property model by 1
-        await propertyModel.findOneAndUpdate({ _id: property_id }, { $inc: { interestedParties: 1 } }).exec();
+        // await propertyModel.findOneAndUpdate({ _id: property_id }, { $inc: { interestedParties: 1 } }).exec();
+        await propertyModel.findOneAndUpdate(
+          { _id: property_id },
+          { $push: { interestedParties: existingCustomer._id } },
+        );
       }
 
       return createdBooking;
@@ -117,6 +121,25 @@ class BookingRepo {
     }
   }
 
+  static async getInterestedParties({ user_id, property_id }) {
+    try {
+      // search the host with user id
+      const host = await Host.findOne({ user_id });
+      const response = await BookingModel.findOne({
+        owner: { $eq: host._id },
+        $and: [{ _id: { $eq: property_id } }],
+      })
+        .populate("customer", "-__v")
+        .populate({ path: "property", populate: { path: "images" } })
+        .sort({ createdAt: -1 });
+
+      return response;
+    } catch (error) {
+      Sentry.captureException(error);
+      return error;
+    }
+  }
+
   static async checkBookedProperty({ user_id, property_id }) {
     try {
       // search the customer with user id
@@ -149,7 +172,11 @@ class BookingRepo {
       );
 
       if (response) {
-        await propertyModel.findOneAndUpdate({ _id: property_id }, { $inc: { interestedParties: -1 } }).exec();
+        // await propertyModel.findOneAndUpdate({ _id: property_id }, { $inc: { interestedParties: -1 } }).exec();
+        await propertyModel.findOneAndUpdate(
+          { _id: property_id },
+          { $pull: { interestedParties: existingCustomer._id } },
+        );
       }
 
       return response;

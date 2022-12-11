@@ -26,6 +26,13 @@ module.exports = (app) => {
     BookingController.getHostBookingDetails,
   );
 
+  router.get(
+    "/interested-parties/:property_id",
+    requireToken,
+    allowRoles([roles.HOST]),
+    BookingController.getInterestedParties,
+  );
+
   // check if a property is already booked
   router.get(
     "/customer-bookings/:property_id",

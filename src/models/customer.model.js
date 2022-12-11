@@ -7,6 +7,7 @@ const customerSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       unique: true,
+      index: true,
       required: [true, "User is required"],
     },
     firstname: {
@@ -20,8 +21,7 @@ const customerSchema = new Schema(
     profilePicture: {
       type: String,
       trim: true,
-      default:
-        "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
+      default: "https://res.cloudinary.com/dzqbzqgqw/image/upload/v1589735894/default_profile_picture_xqjqjy.png",
     },
     isVerified: {
       type: Boolean,
@@ -40,7 +40,7 @@ const customerSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Mongoose hooks here - if any

@@ -7,6 +7,7 @@ const hostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       unique: true,
+      index: true,
       required: [true, "User is required"],
     },
     firstname: {

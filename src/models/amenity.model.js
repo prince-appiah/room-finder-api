@@ -4,6 +4,7 @@ const amenitySchema = new Schema({
   name: {
     type: String,
     required: true,
+    index: true,
   },
   icon: {
     type: String,

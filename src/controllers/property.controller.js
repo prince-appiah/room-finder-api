@@ -1,7 +1,5 @@
 const Sentry = require("@sentry/node");
 const PropertyRepo = require("../repositories/property.repo");
-const UploadController = require("./upload.controller");
-const { uploadImage } = require("./upload.controller");
 
 class RoomController {
   static async addProperty(req, res) {
@@ -13,6 +11,7 @@ class RoomController {
         price,
         description,
         location,
+        color,
         stayPeriod,
         amenities,
         numOfBathrooms,
@@ -57,6 +56,7 @@ class RoomController {
         amenities,
         pictures,
         referenceNo,
+        color,
         numOfBathrooms,
         numOfBedrooms,
       });
@@ -97,7 +97,6 @@ class RoomController {
 
   static async getHostProperties(req, res) {
     try {
-      console.log("getting hosts properties");
       const user_id = req.user._id;
       const result = await PropertyRepo.getHostProperties({ user_id });
 

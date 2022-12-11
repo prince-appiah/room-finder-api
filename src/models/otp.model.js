@@ -4,10 +4,12 @@ const otpSchema = new Schema({
   email: {
     type: String,
     unique: true,
+    index: true,
     required: true,
   },
   code: {
     type: String,
+    index: true,
     required: true,
   },
   expiryDate: {
